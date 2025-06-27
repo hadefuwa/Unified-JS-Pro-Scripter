@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get DOM elements
     const categoriesContainer = document.getElementById('categoriesContainer');
     const codeDisplay = document.getElementById('codeDisplay');
-    const codeHighlighted = document.getElementById('codeHighlighted');
     const copyBtn = document.getElementById('copyBtn');
     const selectAllBtn = document.getElementById('selectAllBtn');
     const editBtn = document.getElementById('editBtn');
@@ -54,16 +53,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         setupEventListeners();
-        setupScrollSync();
-    }
-    
-    function setupScrollSync() {
-        // Synchronize scrolling between textarea and highlighted code
-        codeDisplay.addEventListener('scroll', function() {
-            const highlightedContainer = codeHighlighted.parentElement;
-            highlightedContainer.scrollTop = codeDisplay.scrollTop;
-            highlightedContainer.scrollLeft = codeDisplay.scrollLeft;
-        });
     }
     
     function setupEventListeners() {
@@ -234,12 +223,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Load template content
         currentTemplate = templateId;
         codeDisplay.value = template.code;
-        
-        // Apply syntax highlighting
-        codeHighlighted.textContent = template.code;
-        if (typeof Prism !== 'undefined') {
-            Prism.highlightElement(codeHighlighted);
-        }
         
         descriptionTitle.textContent = template.title;
         descriptionText.textContent = template.description;
@@ -465,6 +448,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         input.click();
     }
+    
+
+    
+
     
     console.log('🎯 Enhanced Template Browser Ready! You can now add custom templates.');
 }); 
