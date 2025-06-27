@@ -598,6 +598,7 @@
             <div class="modal-body">
                 <div class="admin-tabs">
                     <button class="admin-tab-btn active" data-tab="categories">Categories</button>
+                    <button class="admin-tab-btn" data-tab="siemens">Official Siemens</button>
                     <button class="admin-tab-btn" data-tab="settings">Settings</button>
                     <button class="admin-tab-btn" data-tab="statistics">Statistics</button>
                     <button class="admin-tab-btn" data-tab="maintenance">Maintenance</button>
@@ -619,6 +620,65 @@
                             <label>Existing Categories:</label>
                             <div id="categoryList" class="category-admin-list">
                                 <!-- Categories will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Official Siemens Templates Tab -->
+                <div id="siemensTab" class="admin-tab-content">
+                    <h3>Official Siemens WinCC Templates</h3>
+                    <div class="admin-section">
+                        <p>Manage official Siemens WinCC Unified templates from documentation.</p>
+                        
+                        <div class="form-group">
+                            <label>Import from Documentation Files:</label>
+                            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                <button class="btn copy" id="scanDocsBtn">Scan Documentation Files</button>
+                                <button class="btn" id="importMissingBtn">Import Missing Templates</button>
+                            </div>
+                            <small>Scans your documentation files for code examples and imports missing templates.</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Manual Template Import:</label>
+                            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                <select id="manualTemplateSelect" style="flex: 1;">
+                                    <option value="">Select a template to import...</option>
+                                    <option value="database-connections">Database Connections</option>
+                                    <option value="script-snippets">Script Snippets</option>
+                                    <option value="touch-gestures">Touch Gestures</option>
+                                    <option value="language-switching">Language Switching</option>
+                                    <option value="popup-management">Popup Management</option>
+                                    <option value="alarm-subscription">Alarm Subscription</option>
+                                    <option value="file-operations">File Operations</option>
+                                    <option value="timer-functions">Timer Functions</option>
+                                </select>
+                                <button class="btn" id="importSingleBtn">Import Selected</button>
+                            </div>
+                            <small>Manually import specific official Siemens templates.</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Current Official Templates:</label>
+                            <div id="officialTemplatesList" class="category-admin-list" style="max-height: 150px;">
+                                <!-- Official templates will be listed here -->
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Maintenance:</label>
+                            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                <button class="btn" id="validateTemplatesBtn">Validate Templates</button>
+                                <button class="btn" id="updateTemplatesBtn">Check for Updates</button>
+                                <button class="btn delete" id="resetOfficialBtn">Reset to Default</button>
+                            </div>
+                            <small>Validate syntax, check for template updates, or reset to default Siemens templates.</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div id="siemensStatus" style="padding: 10px; background: #f8f9fa; border-radius: 5px; margin-top: 10px;">
+                                <strong>Status:</strong> <span id="siemensStatusText">Ready</span>
                             </div>
                         </div>
                     </div>
