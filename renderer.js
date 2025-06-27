@@ -1,6 +1,14 @@
 // Enhanced Template Browser with Custom Template Support
 // This handles the dynamic template system and user interactions
 
+// Use the console logger exposed by preload.js if available
+const rendererLogger = window.consoleLogger || {
+    log: console.log,
+    error: console.error,
+    warning: console.warn,
+    debug: console.debug
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     
     // Get DOM elements
@@ -50,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
         customCategories: []
     };
     
-    console.log('🚀 Unified JS Pro - Enhanced Template Browser loaded');
+    rendererLogger.log('Unified JS Pro - Enhanced Template Browser loaded');
     
     // Initialize the app
     init();
@@ -125,6 +133,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const allTemplates = templateManager.getAllTemplates();
         const officialTemplates = allTemplates.filter(t => !t.isCustom);
         const customTemplates = allTemplates.filter(t => t.isCustom);
+        
+        rendererLogger.log('Rendering categories - Custom templates:', customTemplates.length, 'Official templates:', officialTemplates.length);
         
         // Render Custom Templates section first (more important for daily use)
         if (customTemplates.length > 0) {
@@ -269,7 +279,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         updateStatus('Template loaded: ' + template.title);
-        console.log('✅ Loaded:', template.title);
+        rendererLogger.log('Loaded:', template.title);
     }
     
     function copyCode() {
@@ -510,10 +520,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         input.click();
     }
-    
-
-    
-
     
     // Admin Functions
     function openAdminModal() {
@@ -781,5 +787,5 @@ document.addEventListener('DOMContentLoaded', function() {
     window.saveCategoryName = saveCategoryName;
     window.deleteCategory = deleteCategory;
     
-    console.log('🎯 Enhanced Template Browser Ready! You can now add custom templates.');
+    rendererLogger.log('Enhanced Template Browser Ready! You can now add custom templates.');
 }); 

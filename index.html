@@ -6,10 +6,10 @@
     <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon2.png">
     <link rel="shortcut icon" href="assets/favicon2.png">
     
-    <!-- Add simple, reliable Prism.js for syntax highlighting -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <!-- Disabled Prism.js - Not needed for current simple textarea design -->
+    <!-- <link href="vendor/prism/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="vendor/prism/prism-core.min.js"></script>
+    <script src="vendor/prism/prism-javascript.min.js"></script> -->
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -702,5 +702,8 @@
 
     <script src="templates.js"></script>
     <script src="renderer.js"></script>
+    
+    <!-- Uncomment the line below to test console logging in renderer process -->
+    <!-- <script src="test-renderer-log.js"></script> -->
 </body>
-</html> 
+</html>
