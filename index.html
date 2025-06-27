@@ -44,6 +44,8 @@
         .header-btn:hover { background: #2980b9; }
         .header-btn.add { background: #27ae60; }
         .header-btn.add:hover { background: #229954; }
+        .header-btn.admin { background: #e74c3c; }
+        .header-btn.admin:hover { background: #c0392b; }
         
         .main-container { display: flex; flex: 1; height: calc(100vh - 140px); }
         
@@ -329,6 +331,165 @@
             background: #1976d2;
             color: white;
         }
+        
+        /* Admin Panel Styles */
+        .admin-tabs {
+            display: flex;
+            border-bottom: 2px solid #ecf0f1;
+            margin-bottom: 20px;
+        }
+        
+        .admin-tab-btn {
+            background: none;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            color: #7f8c8d;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .admin-tab-btn:hover {
+            color: #2c3e50;
+            background: #f8f9fa;
+        }
+        
+        .admin-tab-btn.active {
+            color: #3498db;
+            border-bottom-color: #3498db;
+        }
+        
+        .admin-tab-content {
+            display: none;
+        }
+        
+        .admin-tab-content.active {
+            display: block;
+        }
+        
+        .admin-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .category-admin-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            padding: 10px;
+            background: white;
+        }
+        
+        .category-admin-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            border-bottom: 1px solid #ecf0f1;
+            background: white;
+            margin-bottom: 5px;
+            border-radius: 3px;
+        }
+        
+        .category-admin-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .category-name-edit {
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        .category-name-edit:focus {
+            outline: 1px solid #3498db;
+            background: #ecf0f1;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        .category-admin-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .category-admin-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: background 0.3s;
+        }
+        
+        .category-admin-btn:hover {
+            background: #2980b9;
+        }
+        
+        .category-admin-btn.delete {
+            background: #e74c3c;
+        }
+        
+        .category-admin-btn.delete:hover {
+            background: #c0392b;
+        }
+        
+        /* Statistics Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #ecf0f1;
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        /* Form styling adjustments for admin */
+        .admin-section .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .admin-section .form-group label {
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .admin-section small {
+            display: block;
+            color: #95a5a6;
+            font-size: 11px;
+            margin-top: 5px;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -339,6 +500,7 @@
             <button class="header-btn add" id="addTemplateBtn">Add Template</button>
             <button class="header-btn" id="importBtn">Import</button>
             <button class="header-btn" id="exportBtn">Export</button>
+            <button class="header-btn admin" id="adminBtn">Admin</button>
             <div style="font-size: 14px; margin-left: 15px;">JavaScript Templates for HMI Programming</div>
         </div>
     </div>
@@ -422,6 +584,118 @@
             <div class="modal-footer">
                 <button class="btn" id="cancelBtn">Cancel</button>
                 <button class="btn copy" id="saveTemplateBtn">Save Template</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Modal -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 id="adminModalTitle">Admin Panel</h2>
+                <button class="close-btn" id="closeAdminModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="admin-tabs">
+                    <button class="admin-tab-btn active" data-tab="categories">Categories</button>
+                    <button class="admin-tab-btn" data-tab="settings">Settings</button>
+                    <button class="admin-tab-btn" data-tab="statistics">Statistics</button>
+                    <button class="admin-tab-btn" data-tab="maintenance">Maintenance</button>
+                </div>
+
+                <!-- Categories Tab -->
+                <div id="categoriesTab" class="admin-tab-content active">
+                    <h3>Manage Template Categories</h3>
+                    <div class="admin-section">
+                        <div class="form-group">
+                            <label for="newCategoryName">Add New Category:</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="newCategoryName" placeholder="Enter category name..." style="flex: 1;">
+                                <button class="btn" id="addCategoryBtn">Add Category</button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Existing Categories:</label>
+                            <div id="categoryList" class="category-admin-list">
+                                <!-- Categories will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div id="settingsTab" class="admin-tab-content">
+                    <h3>Application Settings</h3>
+                    <div class="admin-section">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enableDebugMode"> Enable Debug Mode
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="autoSaveTemplates" checked> Auto-save templates
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="maxTemplates">Maximum templates per category:</label>
+                            <input type="number" id="maxTemplates" value="50" min="10" max="200">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Tab -->
+                <div id="statisticsTab" class="admin-tab-content">
+                    <h3>Usage Statistics</h3>
+                    <div class="admin-section">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-number" id="totalTemplates">0</div>
+                                <div class="stat-label">Total Templates</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" id="customTemplates">0</div>
+                                <div class="stat-label">Custom Templates</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" id="totalCategories">0</div>
+                                <div class="stat-label">Categories</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" id="appLaunches">0</div>
+                                <div class="stat-label">App Launches</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Maintenance Tab -->
+                <div id="maintenanceTab" class="admin-tab-content">
+                    <h3>Maintenance & Reset</h3>
+                    <div class="admin-section">
+                        <div class="form-group">
+                            <button class="btn delete" id="clearCustomTemplatesBtn">Clear All Custom Templates</button>
+                            <small>This will remove all user-created templates permanently.</small>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn delete" id="resetSettingsBtn">Reset All Settings</button>
+                            <small>This will reset all settings to default values.</small>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn" id="exportConfigBtn">Export Configuration</button>
+                            <small>Export all settings and custom templates as backup.</small>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn" id="importConfigBtn">Import Configuration</button>
+                            <small>Import previously exported configuration.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="cancelAdminBtn">Close</button>
+                <button class="btn copy" id="saveAdminBtn">Save Changes</button>
             </div>
         </div>
     </div>

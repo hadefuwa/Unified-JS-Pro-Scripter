@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const addTemplateBtn = document.getElementById('addTemplateBtn');
     const importBtn = document.getElementById('importBtn');
     const exportBtn = document.getElementById('exportBtn');
+    const adminBtn = document.getElementById('adminBtn');
     
     // Modal elements
     const templateModal = document.getElementById('templateModal');
@@ -33,9 +34,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const templateDescription = document.getElementById('templateDescription');
     const templateCode = document.getElementById('templateCode');
     
+    // Admin modal elements
+    const adminModal = document.getElementById('adminModal');
+    const closeAdminModal = document.getElementById('closeAdminModal');
+    const cancelAdminBtn = document.getElementById('cancelAdminBtn');
+    const saveAdminBtn = document.getElementById('saveAdminBtn');
+    
     let currentTemplate = null;
     let editingTemplate = null;
     let searchTerm = '';
+    let adminSettings = {
+        debugMode: false,
+        autoSave: true,
+        maxTemplates: 50,
+        customCategories: []
+    };
     
     console.log('🚀 Unified JS Pro - Enhanced Template Browser loaded');
     
@@ -66,6 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
         addTemplateBtn.addEventListener('click', openAddTemplateModal);
         importBtn.addEventListener('click', importTemplates);
         exportBtn.addEventListener('click', exportTemplates);
+        adminBtn.addEventListener('click', openAdminModal);
         
         // Code area buttons
         copyBtn.addEventListener('click', copyCode);
@@ -78,11 +92,29 @@ document.addEventListener('DOMContentLoaded', function() {
         cancelBtn.addEventListener('click', closeTemplateModal);
         saveTemplateBtn.addEventListener('click', saveTemplate);
         
+        // Admin modal events
+        closeAdminModal.addEventListener('click', closeAdminModalFunc);
+        cancelAdminBtn.addEventListener('click', closeAdminModalFunc);
+        saveAdminBtn.addEventListener('click', saveAdminSettings);
+        
         // Close modal when clicking outside
         templateModal.addEventListener('click', function(e) {
             if (e.target === templateModal) {
                 closeTemplateModal();
             }
+        });
+        
+        adminModal.addEventListener('click', function(e) {
+            if (e.target === adminModal) {
+                closeAdminModalFunc();
+            }
+        });
+        
+        // Admin tab switching
+        document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                switchAdminTab(this.getAttribute('data-tab'));
+            });
         });
     }
     
@@ -189,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 templateDiv.innerHTML = `
                     <div class="template-title">${template.title}</div>
                     <div class="template-desc">${template.description}</div>
-                    ${template.isCustom ? '<div class="template-badge custom">CUSTOM</div>' : '<div class="template-badge official">SIEMENS</div>'}
+                    ${template.isCustom ? (template.category === 'User' ? '<div class="template-badge custom">USER</div>' : '<div class="template-badge custom">CUSTOM</div>') : '<div class="template-badge official">SIEMENS</div>'}
                 `;
                 
                 templateDiv.addEventListener('click', function() {
@@ -288,7 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const officialTemplates = allTemplates.filter(t => !t.isCustom).length;
         
         if (customTemplates > 0) {
-            templateCount.textContent = `${totalTemplates} total (${officialTemplates} Siemens + ${customTemplates} Custom)`;
+            templateCount.textContent = `${totalTemplates} total (${officialTemplates} Siemens + ${customTemplates} User)`;
         } else {
             templateCount.textContent = `${totalTemplates} Siemens templates`;
         }
@@ -299,6 +331,7 @@ document.addEventListener('DOMContentLoaded', function() {
         editingTemplate = null;
         modalTitle.textContent = 'Add New Template';
         clearModalForm();
+        populateCategoryDropdown();
         templateModal.style.display = 'block';
         templateTitle.focus();
     }
@@ -311,6 +344,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         editingTemplate = template;
         modalTitle.textContent = 'Edit Template';
+        
+        populateCategoryDropdown();
         
         templateTitle.value = template.title;
         templateCategory.value = template.category;
@@ -358,9 +393,36 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function clearModalForm() {
         templateTitle.value = '';
-        templateCategory.value = 'Custom';
+        templateCategory.value = 'User';
         templateDescription.value = '';
         templateCode.value = '';
+    }
+    
+    function populateCategoryDropdown() {
+        const allTemplates = templateManager.getAllTemplates();
+        const categories = [...new Set(allTemplates.map(t => t.category))].sort();
+        
+        // Clear existing options
+        templateCategory.innerHTML = '';
+        
+        // Add all available categories
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category;
+            option.textContent = category;
+            templateCategory.appendChild(option);
+        });
+        
+        // Add default categories that might not exist yet
+        const defaultCategories = ['User', 'Custom', 'Tag Operations', 'Screen Navigation', 'Alarm Management', 'Recipe Management', 'Utilities'];
+        defaultCategories.forEach(category => {
+            if (!categories.includes(category)) {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                templateCategory.appendChild(option);
+            }
+        });
     }
     
     function saveTemplate() {
@@ -452,6 +514,272 @@ document.addEventListener('DOMContentLoaded', function() {
 
     
 
+    
+    // Admin Functions
+    function openAdminModal() {
+        loadAdminSettings();
+        adminModal.style.display = 'block';
+        switchAdminTab('categories');
+        updateAdminStatistics();
+        loadCategoryList();
+    }
+    
+    function closeAdminModalFunc() {
+        adminModal.style.display = 'none';
+    }
+    
+    function switchAdminTab(tabName) {
+        // Hide all tab contents
+        document.querySelectorAll('.admin-tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        // Remove active class from all tab buttons
+        document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Show selected tab
+        document.getElementById(tabName + 'Tab').classList.add('active');
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        
+        // Load specific tab data
+        if (tabName === 'statistics') {
+            updateAdminStatistics();
+        } else if (tabName === 'categories') {
+            loadCategoryList();
+        }
+    }
+    
+    function loadCategoryList() {
+        const categoryList = document.getElementById('categoryList');
+        const allTemplates = templateManager.getAllTemplates();
+        
+        // Get all unique categories
+        const categories = [...new Set(allTemplates.map(t => t.category))].sort();
+        
+        categoryList.innerHTML = '';
+        
+        categories.forEach(category => {
+            const categoryItem = document.createElement('div');
+            categoryItem.className = 'category-admin-item';
+            categoryItem.innerHTML = `
+                <input type="text" class="category-name-edit" value="${category}" data-original="${category}">
+                <div class="category-admin-actions">
+                    <button class="category-admin-btn" onclick="saveCategoryName(this)">Save</button>
+                    <button class="category-admin-btn delete" onclick="deleteCategory('${category}')">Delete</button>
+                </div>
+            `;
+            categoryList.appendChild(categoryItem);
+        });
+        
+        // Add new category functionality
+        const addCategoryBtn = document.getElementById('addCategoryBtn');
+        const newCategoryInput = document.getElementById('newCategoryName');
+        
+        addCategoryBtn.onclick = function() {
+            const newName = newCategoryInput.value.trim();
+            if (newName && !categories.includes(newName)) {
+                adminSettings.customCategories.push(newName);
+                saveAdminSettings();
+                loadCategoryList();
+                newCategoryInput.value = '';
+                updateStatus('Category "' + newName + '" added successfully');
+            } else if (categories.includes(newName)) {
+                alert('Category already exists!');
+            } else {
+                alert('Please enter a category name');
+            }
+        };
+    }
+    
+    function saveCategoryName(button) {
+        const input = button.parentElement.parentElement.querySelector('.category-name-edit');
+        const originalName = input.getAttribute('data-original');
+        const newName = input.value.trim();
+        
+        if (newName && newName !== originalName) {
+            // Update all templates with this category
+            const allTemplates = templateManager.getAllTemplates();
+            let updated = 0;
+            
+            allTemplates.forEach(template => {
+                if (template.category === originalName) {
+                    template.category = newName;
+                    templateManager.addTemplate(template);
+                    updated++;
+                }
+            });
+            
+            // Force save custom templates to localStorage
+            templateManager.saveCustomTemplates();
+            
+            updateStatus(`Updated ${updated} templates from "${originalName}" to "${newName}"`);
+            renderCategories();
+            loadCategoryList();
+        }
+    }
+    
+    function deleteCategory(categoryName) {
+        const allTemplates = templateManager.getAllTemplates();
+        const templatesInCategory = allTemplates.filter(t => t.category === categoryName);
+        
+        if (templatesInCategory.length > 0) {
+            const confirmMessage = `This will delete ${templatesInCategory.length} templates in "${categoryName}". Are you sure?`;
+            if (confirm(confirmMessage)) {
+                // Delete all templates in this category
+                templatesInCategory.forEach(template => {
+                    if (template.isCustom) {
+                        templateManager.removeTemplate(template.id);
+                    }
+                });
+                
+                updateStatus(`Deleted category "${categoryName}" and ${templatesInCategory.length} templates`);
+                renderCategories();
+                loadCategoryList();
+            }
+        } else {
+            updateStatus(`Category "${categoryName}" is empty and cannot be deleted`);
+        }
+    }
+    
+    function updateAdminStatistics() {
+        const allTemplates = templateManager.getAllTemplates();
+        const customTemplates = allTemplates.filter(t => t.isCustom);
+        const categories = [...new Set(allTemplates.map(t => t.category))];
+        
+        document.getElementById('totalTemplates').textContent = allTemplates.length;
+        document.getElementById('customTemplates').textContent = customTemplates.length;
+        document.getElementById('totalCategories').textContent = categories.length;
+        
+        // Get app launches from localStorage
+        const launches = localStorage.getItem('appLaunches') || '0';
+        document.getElementById('appLaunches').textContent = launches;
+    }
+    
+    function loadAdminSettings() {
+        const saved = localStorage.getItem('adminSettings');
+        if (saved) {
+            adminSettings = { ...adminSettings, ...JSON.parse(saved) };
+        }
+        
+        // Load settings into form
+        document.getElementById('enableDebugMode').checked = adminSettings.debugMode;
+        document.getElementById('autoSaveTemplates').checked = adminSettings.autoSave;
+        document.getElementById('maxTemplates').value = adminSettings.maxTemplates;
+    }
+    
+    function saveAdminSettings() {
+        // Get values from form
+        adminSettings.debugMode = document.getElementById('enableDebugMode').checked;
+        adminSettings.autoSave = document.getElementById('autoSaveTemplates').checked;
+        adminSettings.maxTemplates = parseInt(document.getElementById('maxTemplates').value);
+        
+        // Save to localStorage
+        localStorage.setItem('adminSettings', JSON.stringify(adminSettings));
+        
+        updateStatus('Admin settings saved successfully');
+        closeAdminModalFunc();
+    }
+    
+    // Add maintenance functions
+    document.getElementById('clearCustomTemplatesBtn').addEventListener('click', function() {
+        if (confirm('This will permanently delete ALL custom templates. Are you sure?')) {
+            const allTemplates = templateManager.getAllTemplates();
+            const customTemplates = allTemplates.filter(t => t.isCustom);
+            
+            customTemplates.forEach(template => {
+                templateManager.removeTemplate(template.id);
+            });
+            
+            renderCategories();
+            updateStatus(`Deleted ${customTemplates.length} custom templates`);
+            updateAdminStatistics();
+        }
+    });
+    
+    document.getElementById('resetSettingsBtn').addEventListener('click', function() {
+        if (confirm('This will reset all settings to default values. Are you sure?')) {
+            localStorage.removeItem('adminSettings');
+            localStorage.removeItem('appLaunches');
+            adminSettings = {
+                debugMode: false,
+                autoSave: true,
+                maxTemplates: 50,
+                customCategories: []
+            };
+            loadAdminSettings();
+            updateStatus('Settings reset to defaults');
+        }
+    });
+    
+    document.getElementById('exportConfigBtn').addEventListener('click', function() {
+        const config = {
+            settings: adminSettings,
+            customTemplates: templateManager.getAllTemplates().filter(t => t.isCustom),
+            timestamp: new Date().toISOString()
+        };
+        
+        const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'unified-js-pro-config-' + new Date().toISOString().split('T')[0] + '.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        updateStatus('Configuration exported successfully');
+    });
+    
+    document.getElementById('importConfigBtn').addEventListener('click', function() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        
+        input.onchange = function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const config = JSON.parse(e.target.result);
+                    
+                    if (config.settings) {
+                        adminSettings = { ...adminSettings, ...config.settings };
+                        localStorage.setItem('adminSettings', JSON.stringify(adminSettings));
+                    }
+                    
+                    if (config.customTemplates && Array.isArray(config.customTemplates)) {
+                        config.customTemplates.forEach(template => {
+                            templateManager.addTemplate(template);
+                        });
+                    }
+                    
+                    loadAdminSettings();
+                    renderCategories();
+                    updateStatus(`Configuration imported successfully from ${config.timestamp || 'unknown date'}`);
+                    
+                } catch (error) {
+                    alert('Error importing configuration: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        };
+        
+        input.click();
+    });
+    
+    // Track app launches
+    const launches = parseInt(localStorage.getItem('appLaunches') || '0') + 1;
+    localStorage.setItem('appLaunches', launches.toString());
+    
+    // Make admin functions globally accessible
+    window.saveCategoryName = saveCategoryName;
+    window.deleteCategory = deleteCategory;
     
     console.log('🎯 Enhanced Template Browser Ready! You can now add custom templates.');
 }); 
