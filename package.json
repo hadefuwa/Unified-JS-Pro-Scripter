@@ -1,6 +1,6 @@
 {
   "name": "unified-js-pro",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Unified JS Pro - A powerful Electron application for Siemens WinCC JavaScript templates",
   "main": "main.js",
   "homepage": "https://github.com/hadefuwa/Unified-JS-Pro",

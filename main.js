@@ -112,9 +112,9 @@ function createWindow() {
     }
   });
 
-  // Developer tools enabled for debugging
-  mainWindow.webContents.openDevTools();
-  log('DevTools opened');
+  // Developer tools disabled for production
+  // mainWindow.webContents.openDevTools();
+  // log('DevTools opened');
 
   // Clean up when window is closed
   mainWindow.on('closed', function () {

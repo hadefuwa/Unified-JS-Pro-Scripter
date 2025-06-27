@@ -39,6 +39,262 @@
       "description": "Acknowledge alarms with proper error handling.",
       "isCustom": false,
       "code": "// Acknowledge Alarm - Siemens WinCC Unified\nfunction acknowledgeAlarm(alarmId) {\n    try {\n        HMIRuntime.Alarms.Acknowledge(alarmId);\n        HMIRuntime.Trace(\"Acknowledged alarm: \" + alarmId);\n        return true;\n    } catch (error) {\n        HMIRuntime.Trace(\"Error acknowledging alarm: \" + error.message);\n        return false;\n    }\n}\n\n// Example usage:\nacknowledgeAlarm(\"ALM_001\");\nacknowledgeAlarm(\"TEMP_HIGH_ALARM\");"
+    },
+    {
+      "id": "array-search",
+      "title": "Array Search and Find",
+      "category": "JavaScript Basics",
+      "description": "Search for values in arrays with different methods.",
+      "isCustom": false,
+      "code": "// Array Search - Siemens WinCC Unified\n// Find equipment in array\nvar equipment = ['MOTOR_001', 'PUMP_002', 'VALVE_003'];\nvar motorIndex = equipment.indexOf('MOTOR_001');\nHMIRuntime.Trace(\"Motor found at index: \" + motorIndex);\n\n// Check if equipment exists\nvar hasPump = equipment.indexOf('PUMP_002') !== -1;\nHMIRuntime.Trace(\"Has pump: \" + hasPump);\n\n// Find alarm by type\nvar alarms = ['TEMP_HIGH', 'PRESSURE_LOW', 'MOTOR_FAULT'];\nvar tempAlarm = alarms.find(function(alarm) {\n    return alarm.indexOf('TEMP') !== -1;\n});\nHMIRuntime.Trace(\"Found temperature alarm: \" + tempAlarm);"
+    },
+    {
+      "id": "array-filter",
+      "title": "Array Filtering",
+      "category": "JavaScript Basics",
+      "description": "Filter arrays to find specific equipment or values.",
+      "isCustom": false,
+      "code": "// Array Filtering - Siemens WinCC Unified\n// Filter motors from equipment list\nvar equipment = ['MOTOR_001', 'PUMP_002', 'MOTOR_003', 'VALVE_004'];\nvar motors = equipment.filter(function(item) {\n    return item.indexOf('MOTOR') !== -1;\n});\nHMIRuntime.Trace(\"Motors found: \" + motors.join(\", \"));\n\n// Filter high temperatures\nvar temperatures = [78.5, 92.1, 85.2, 105.3, 88.9];\nvar highTemps = temperatures.filter(function(temp) {\n    return temp > 90;\n});\nHMIRuntime.Trace(\"High temperatures: \" + highTemps.join(\"°C, \"));\n\n// Filter active alarms\nvar alarmStates = [true, false, true, false];\nvar activeCount = alarmStates.filter(function(active) {\n    return active === true;\n}).length;\nHMIRuntime.Trace(\"Active alarms: \" + activeCount);"
+    },
+    {
+      "id": "array-map",
+      "title": "Array Transformation",
+      "category": "JavaScript Basics",
+      "description": "Transform array values for calculations and formatting.",
+      "isCustom": false,
+      "code": "// Array Transformation - Siemens WinCC Unified\n// Convert temperatures to Fahrenheit\nvar celsiusTemps = [25.0, 30.5, 22.8, 35.2];\nvar fahrenheitTemps = celsiusTemps.map(function(celsius) {\n    return (celsius * 9 / 5) + 32;\n});\nHMIRuntime.Trace(\"Fahrenheit: \" + fahrenheitTemps.join(\"°F, \"));\n\n// Add units to equipment names\nvar equipment = ['MOTOR_001', 'PUMP_002', 'VALVE_003'];\nvar equipmentWithUnits = equipment.map(function(item) {\n    return item + \"_UNIT\";\n});\nHMIRuntime.Trace(\"With units: \" + equipmentWithUnits.join(\", \"));\n\n// Format numbers with decimals\nvar values = [123.456, 789.123, 456.789];\nvar formatted = values.map(function(val) {\n    return val.toFixed(2);\n});\nHMIRuntime.Trace(\"Formatted: \" + formatted.join(\", \"));"
+    },
+    {
+      "id": "array-join",
+      "title": "Array Joining and Combining",
+      "category": "JavaScript Basics",
+      "description": "Join arrays and combine multiple arrays together.",
+      "isCustom": false,
+      "code": "// Array Joining - Siemens WinCC Unified\n// Join equipment names for display\nvar motors = ['MOTOR_001', 'MOTOR_002', 'MOTOR_003'];\nvar motorList = motors.join(', ');\nHMIRuntime.Trace(\"Motor list: \" + motorList);\n\n// Combine different equipment types\nvar pumps = ['PUMP_001', 'PUMP_002'];\nvar valves = ['VALVE_001', 'VALVE_002', 'VALVE_003'];\nvar allEquipment = motors.concat(pumps, valves);\nHMIRuntime.Trace(\"All equipment: \" + allEquipment.join(\", \"));\n\n// Create status report\nvar statuses = ['Running', 'Stopped', 'Maintenance'];\nvar statusReport = \"Equipment Status: \" + statuses.join(\" | \");\nHMIRuntime.Trace(statusReport);"
+    },
+    {
+      "id": "array-reduce",
+      "title": "Array Calculations and Totals",
+      "category": "JavaScript Basics",
+      "description": "Calculate totals, averages, and summaries from arrays.",
+      "isCustom": false,
+      "code": "// Array Calculations - Siemens WinCC Unified\n// Calculate total production\nvar production = [125, 150, 200, 175, 300];\nvar totalProduction = 0;\nfor (var i = 0; i < production.length; i++) {\n    totalProduction = totalProduction + production[i];\n}\nHMIRuntime.Trace(\"Total production: \" + totalProduction + \" units\");\n\n// Calculate average temperature\nvar temperatures = [78.5, 82.1, 85.2, 79.8, 81.4];\nvar totalTemp = 0;\nfor (var i = 0; i < temperatures.length; i++) {\n    totalTemp = totalTemp + temperatures[i];\n}\nvar averageTemp = totalTemp / temperatures.length;\nHMIRuntime.Trace(\"Average temperature: \" + averageTemp.toFixed(2) + \"°C\");\n\n// Count running equipment\nvar equipmentStatus = ['Running', 'Stopped', 'Running', 'Maintenance', 'Running'];\nvar runningCount = 0;\nfor (var i = 0; i < equipmentStatus.length; i++) {\n    if (equipmentStatus[i] === 'Running') {\n        runningCount = runningCount + 1;\n    }\n}\nHMIRuntime.Trace(\"Running equipment: \" + runningCount + \" out of \" + equipmentStatus.length);"
+    },
+    {
+      "id": "string-concatenation",
+      "title": "String Concatenation and Building",
+      "category": "JavaScript Basics",
+      "description": "Join multiple strings for display messages and file paths.",
+      "isCustom": false,
+      "code": "// String Concatenation - Siemens WinCC Unified\n// Build equipment names\nvar equipmentType = \"MOTOR\";\nvar equipmentNumber = \"001\";\nvar fullName = equipmentType + \"_\" + equipmentNumber;\nHMIRuntime.Trace(\"Equipment name: \" + fullName);\n\n// Build file paths\nvar basePath = \"C:\\\\Data\\\\\";\nvar fileName = \"ProductionLog.txt\";\nvar fullPath = basePath + fileName;\nHMIRuntime.Trace(\"File path: \" + fullPath);\n\n// Build alarm messages\nvar alarmType = \"Temperature\";\nvar location = \"Tank 1\";\nvar value = \"95.5°C\";\nvar alarmMessage = alarmType + \" alarm in \" + location + \": \" + value;\nHMIRuntime.Trace(\"Alarm: \" + alarmMessage);\n\n// Build status display\nvar motorName = \"Motor 1\";\nvar speed = 1500;\nvar status = \"Running\";\nvar displayText = motorName + \" (\" + speed + \" RPM) - \" + status;\nHMIRuntime.Trace(\"Display: \" + displayText);"
+    },
+    {
+      "id": "string-search",
+      "title": "String Searching and Finding",
+      "category": "JavaScript Basics",
+      "description": "Find text within strings and search for keywords.",
+      "isCustom": false,
+      "code": "// String Searching - Siemens WinCC Unified\n// Find equipment type in tag name\nvar tagName = \"MOTOR_001_Speed\";\nvar motorPosition = tagName.indexOf(\"MOTOR\");\nHMIRuntime.Trace(\"Motor found at position: \" + motorPosition);\n\n// Check if tag is motor-related\nvar isMotorTag = tagName.indexOf(\"MOTOR\") !== -1;\nHMIRuntime.Trace(\"Is motor tag: \" + isMotorTag);\n\n// Search for alarm keywords\nvar alarmMessage = \"High temperature detected in Tank 1\";\nvar hasTemperature = alarmMessage.indexOf(\"temperature\") !== -1;\nvar hasTank = alarmMessage.indexOf(\"Tank\") !== -1;\nHMIRuntime.Trace(\"Temperature alarm: \" + hasTemperature);\nHMIRuntime.Trace(\"Tank location: \" + hasTank);\n\n// Find file extension\nvar fileName = \"ProductionData.csv\";\nvar dotPosition = fileName.indexOf(\".\");\nif (dotPosition !== -1) {\n    var extension = fileName.substring(dotPosition + 1);\n    HMIRuntime.Trace(\"File extension: \" + extension);\n}"
+    },
+    {
+      "id": "string-split",
+      "title": "String Splitting and Parsing",
+      "category": "JavaScript Basics",
+      "description": "Split comma-separated values and parse data strings.",
+      "isCustom": false,
+      "code": "// String Splitting - Siemens WinCC Unified\n// Parse equipment list\nvar equipmentList = \"MOTOR_001,PUMP_002,VALVE_003\";\nvar equipment = equipmentList.split(\",\");\nHMIRuntime.Trace(\"Equipment count: \" + equipment.length);\nfor (var i = 0; i < equipment.length; i++) {\n    HMIRuntime.Trace(\"Equipment \" + (i + 1) + \": \" + equipment[i]);\n}\n\n// Parse tag name parts\nvar tagName = \"MOTOR_001_Speed_RPM\";\nvar parts = tagName.split(\"_\");\nvar equipmentType = parts[0];  // MOTOR\nvar equipmentId = parts[1];    // 001\nvar parameter = parts[2];      // Speed\nHMIRuntime.Trace(\"Type: \" + equipmentType + \", ID: \" + equipmentId + \", Parameter: \" + parameter);\n\n// Parse CSV data line\nvar csvLine = \"2024-12-27,Motor1,1500,Running\";\nvar data = csvLine.split(\",\");\nvar date = data[0];\nvar name = data[1];\nvar speed = data[2];\nvar status = data[3];\nHMIRuntime.Trace(\"Date: \" + date + \", Name: \" + name + \", Speed: \" + speed + \", Status: \" + status);"
+    },
+    {
+      "id": "string-case",
+      "title": "String Case Conversion",
+      "category": "JavaScript Basics",
+      "description": "Convert strings to upper/lower case for display consistency.",
+      "isCustom": false,
+      "code": "// String Case Conversion - Siemens WinCC Unified\n// Format equipment names for display\nvar equipmentName = \"motor_001\";\nvar displayName = equipmentName.toUpperCase();\nHMIRuntime.Trace(\"Display name: \" + displayName);\n\n// Format user input\nvar userInput = \"PUMP_STATUS\";\nvar searchTerm = userInput.toLowerCase();\nHMIRuntime.Trace(\"Search term: \" + searchTerm);\n\n// Standardize alarm messages\nvar alarmType = \"temperature high\";\nvar standardAlarm = alarmType.toUpperCase();\nHMIRuntime.Trace(\"Standard alarm: \" + standardAlarm);\n\n// Format file names\nvar fileName = \"PRODUCTION_LOG.TXT\";\nvar lowerFileName = fileName.toLowerCase();\nHMIRuntime.Trace(\"File name: \" + lowerFileName);\n\n// Mixed case formatting\nvar rawText = \"motor status\";\nvar firstChar = rawText.charAt(0).toUpperCase();\nvar restOfText = rawText.slice(1).toLowerCase();\nvar formattedText = firstChar + restOfText;\nHMIRuntime.Trace(\"Formatted: \" + formattedText);"
+    },
+    {
+      "id": "string-trim",
+      "title": "String Trimming and Cleaning",
+      "category": "JavaScript Basics",
+      "description": "Remove spaces and clean user input for validation.",
+      "isCustom": false,
+      "code": "// String Trimming - Siemens WinCC Unified\n// Clean user input\nvar userInput = \"  MOTOR_001  \";\nvar cleanInput = userInput.trim();\nHMIRuntime.Trace(\"Original: '\" + userInput + \"'\");\nHMIRuntime.Trace(\"Cleaned: '\" + cleanInput + \"'\");\n\n// Clean recipe name\nvar recipeName = \"   Recipe A   \";\nvar cleanRecipe = recipeName.trim();\nif (cleanRecipe !== \"\") {\n    HMIRuntime.Trace(\"Valid recipe: \" + cleanRecipe);\n} else {\n    HMIRuntime.Trace(\"Empty recipe name\");\n}\n\n// Remove extra spaces from alarm message\nvar alarmMessage = \"  High   temperature   in  Tank 1  \";\nvar cleanMessage = alarmMessage.trim();\n// Replace multiple spaces with single space\nvar words = cleanMessage.split(\" \");\nvar cleanWords = [];\nfor (var i = 0; i < words.length; i++) {\n    if (words[i] !== \"\") {\n        cleanWords.push(words[i]);\n    }\n}\nvar finalMessage = cleanWords.join(\" \");\nHMIRuntime.Trace(\"Clean message: '\" + finalMessage + \"'\");\n\n// Validate tag name\nvar tagName = \"  MOTOR_001_Speed  \";\nvar validTag = tagName.trim();\nif (validTag.length > 0) {\n    HMIRuntime.Trace(\"Valid tag: \" + validTag);\n}"
+    },
+    {
+      "id": "math-basic",
+      "title": "Basic Math Functions",
+      "category": "JavaScript Basics",
+      "description": "Min/Max functions for alarm limits and safety checks.",
+      "isCustom": false,
+      "code": "// Basic Math Functions - Siemens WinCC Unified\n// Safety limit checking\nvar currentTemp = 95.5;\nvar maxTemp = 100.0;\nvar minTemp = 0.0;\n\n// Ensure temperature stays within limits\nvar safeTemp = Math.min(currentTemp, maxTemp);\nHMIRuntime.Trace(\"Safe temperature: \" + safeTemp + \"°C\");\n\n// Check minimum value\nvar validTemp = Math.max(safeTemp, minTemp);\nHMIRuntime.Trace(\"Valid temperature: \" + validTemp + \"°C\");\n\n// Find highest and lowest values in array\nvar temperatures = [78.5, 92.1, 85.2, 105.3, 88.9];\nvar highestTemp = Math.max.apply(null, temperatures);\nvar lowestTemp = Math.min.apply(null, temperatures);\nHMIRuntime.Trace(\"Highest: \" + highestTemp + \"°C\");\nHMIRuntime.Trace(\"Lowest: \" + lowestTemp + \"°C\");\n\n// Absolute values for difference calculations\nvar setPoint = 80.0;\nvar actualValue = 78.5;\nvar difference = Math.abs(actualValue - setPoint);\nHMIRuntime.Trace(\"Temperature difference: \" + difference + \"°C\");"
+    },
+    {
+      "id": "math-advanced",
+      "title": "Advanced Calculations",
+      "category": "JavaScript Basics",
+      "description": "Percentage calculations for production efficiency.",
+      "isCustom": false,
+      "code": "// Advanced Calculations - Siemens WinCC Unified\n// Production efficiency calculation\nvar goodParts = 850;\nvar totalParts = 1000;\nvar efficiency = (goodParts / totalParts) * 100;\nHMIRuntime.Trace(\"Production efficiency: \" + efficiency.toFixed(2) + \"%\");\n\n// Power calculation\nvar voltage = 230;  // Volts\nvar current = 10;   // Amps\nvar power = voltage * current;\nHMIRuntime.Trace(\"Motor power: \" + power + \" Watts\");\n\n// Average calculation\nvar readings = [78.5, 82.1, 85.2, 79.8, 81.4];\nvar total = 0;\nfor (var i = 0; i < readings.length; i++) {\n    total = total + readings[i];\n}\nvar average = total / readings.length;\nHMIRuntime.Trace(\"Average reading: \" + average.toFixed(2));\n\n// Round values for display\nvar preciseValue = 123.456789;\nvar rounded = Math.round(preciseValue * 100) / 100; // Round to 2 decimals\nHMIRuntime.Trace(\"Rounded value: \" + rounded);\n\n// Square root for standard deviation\nvar variance = 25.0;\nvar standardDeviation = Math.sqrt(variance);\nHMIRuntime.Trace(\"Standard deviation: \" + standardDeviation);"
+    },
+    {
+      "id": "math-formatting",
+      "title": "Number Formatting",
+      "category": "JavaScript Basics",
+      "description": "Format numbers for display with proper decimals.",
+      "isCustom": false,
+      "code": "// Number Formatting - Siemens WinCC Unified\n// Format temperature with 2 decimals\nvar temperature = 78.456789;\nvar formattedTemp = temperature.toFixed(2);\nHMIRuntime.Trace(\"Temperature: \" + formattedTemp + \"°C\");\n\n// Format pressure with 1 decimal\nvar pressure = 123.456;\nvar formattedPressure = pressure.toFixed(1);\nHMIRuntime.Trace(\"Pressure: \" + formattedPressure + \" bar\");\n\n// Format large numbers with separators\nvar productionCount = 1234567;\nvar formattedCount = productionCount.toLocaleString();\nHMIRuntime.Trace(\"Production: \" + formattedCount + \" units\");\n\n// Format percentage\nvar efficiency = 0.8567;\nvar efficiencyPercent = (efficiency * 100).toFixed(1) + \"%\";\nHMIRuntime.Trace(\"Efficiency: \" + efficiencyPercent);\n\n// Format currency (for cost calculations)\nvar materialCost = 1234.56;\nvar formattedCost = \"$\" + materialCost.toFixed(2);\nHMIRuntime.Trace(\"Material cost: \" + formattedCost);\n\n// Remove decimals for integer display\nvar speed = 1500.789;\nvar integerSpeed = Math.floor(speed);\nHMIRuntime.Trace(\"Motor speed: \" + integerSpeed + \" RPM\");"
+    },
+    {
+      "id": "date-current",
+      "title": "Current Date and Time",
+      "category": "JavaScript Basics",
+      "description": "Get current timestamp for logging and displays.",
+      "isCustom": false,
+      "code": "// Current Date/Time - Siemens WinCC Unified\n// Get current date and time\nvar now = new Date();\nHMIRuntime.Trace(\"Current date/time: \" + now.toString());\n\n// Get individual components\nvar year = now.getFullYear();\nvar month = now.getMonth() + 1; // Month is 0-based\nvar day = now.getDate();\nvar hours = now.getHours();\nvar minutes = now.getMinutes();\nvar seconds = now.getSeconds();\n\nHMIRuntime.Trace(\"Year: \" + year);\nHMIRuntime.Trace(\"Month: \" + month);\nHMIRuntime.Trace(\"Day: \" + day);\nHMIRuntime.Trace(\"Time: \" + hours + \":\" + minutes + \":\" + seconds);\n\n// Create timestamp for logging\nvar timestamp = year + \"-\" + month + \"-\" + day + \" \" + hours + \":\" + minutes + \":\" + seconds;\nHMIRuntime.Trace(\"Log timestamp: \" + timestamp);\n\n// Get day of week\nvar dayNames = [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"];\nvar dayOfWeek = dayNames[now.getDay()];\nHMIRuntime.Trace(\"Day of week: \" + dayOfWeek);"
+    },
+    {
+      "id": "date-formatting",
+      "title": "Date Formatting",
+      "category": "JavaScript Basics",
+      "description": "Format dates for reports and displays.",
+      "isCustom": false,
+      "code": "// Date Formatting - Siemens WinCC Unified\n// Create a date for formatting\nvar date = new Date();\n\n// Format for local display\nvar localDate = date.toLocaleDateString();\nHMIRuntime.Trace(\"Local date: \" + localDate);\n\n// Format for local time\nvar localTime = date.toLocaleTimeString();\nHMIRuntime.Trace(\"Local time: \" + localTime);\n\n// Custom format: YYYY-MM-DD\nvar year = date.getFullYear();\nvar month = (date.getMonth() + 1).toString();\nvar day = date.getDate().toString();\n// Add leading zeros\nif (month.length === 1) month = \"0\" + month;\nif (day.length === 1) day = \"0\" + day;\nvar customDate = year + \"-\" + month + \"-\" + day;\nHMIRuntime.Trace(\"Custom date: \" + customDate);\n\n// Custom format: DD/MM/YYYY HH:MM\nvar hours = date.getHours().toString();\nvar minutes = date.getMinutes().toString();\nif (hours.length === 1) hours = \"0\" + hours;\nif (minutes.length === 1) minutes = \"0\" + minutes;\nvar displayFormat = day + \"/\" + month + \"/\" + year + \" \" + hours + \":\" + minutes;\nHMIRuntime.Trace(\"Display format: \" + displayFormat);\n\n// File name format: YYYYMMDD_HHMMSS\nvar fileFormat = year + month + day + \"_\" + hours + minutes + date.getSeconds();\nHMIRuntime.Trace(\"File format: \" + fileFormat);"
+    },
+    {
+      "id": "date-calculations",
+      "title": "Date Calculations",
+      "category": "JavaScript Basics",
+      "description": "Calculate time differences and schedules.",
+      "isCustom": false,
+      "code": "// Date Calculations - Siemens WinCC Unified\n// Calculate time difference\nvar startTime = new Date();\n// Simulate some process time\nvar endTime = new Date(startTime.getTime() + 5000); // Add 5 seconds\n\nvar timeDifference = endTime - startTime; // Difference in milliseconds\nvar secondsDifference = timeDifference / 1000;\nHMIRuntime.Trace(\"Process time: \" + secondsDifference + \" seconds\");\n\n// Calculate hours difference\nvar shiftStart = new Date();\nshiftStart.setHours(8, 0, 0); // 8:00 AM\nvar shiftEnd = new Date();\nshiftEnd.setHours(16, 0, 0); // 4:00 PM\n\nvar shiftDuration = (shiftEnd - shiftStart) / (1000 * 60 * 60); // Convert to hours\nHMIRuntime.Trace(\"Shift duration: \" + shiftDuration + \" hours\");\n\n// Add days to current date (maintenance schedule)\nvar today = new Date();\nvar maintenanceDate = new Date(today.getTime() + (30 * 24 * 60 * 60 * 1000)); // Add 30 days\nHMIRuntime.Trace(\"Next maintenance: \" + maintenanceDate.toLocaleDateString());\n\n// Calculate age of equipment\nvar installDate = new Date(2020, 0, 15); // January 15, 2020\nvar currentDate = new Date();\nvar ageInDays = Math.floor((currentDate - installDate) / (1000 * 60 * 60 * 24));\nvar ageInYears = Math.floor(ageInDays / 365);\nHMIRuntime.Trace(\"Equipment age: \" + ageInYears + \" years (\" + ageInDays + \" days)\");"
+    },
+    {
+      "id": "date-timezone",
+      "title": "Time Zone Handling",
+      "category": "JavaScript Basics",
+      "description": "Convert between local and UTC time for global operations.",
+      "isCustom": false,
+      "code": "// Time Zone Handling - Siemens WinCC Unified\n// Get current date in different formats\nvar now = new Date();\n\n// Local time\nHMIRuntime.Trace(\"Local time: \" + now.toString());\n\n// UTC time\nvar utcTime = now.toUTCString();\nHMIRuntime.Trace(\"UTC time: \" + utcTime);\n\n// ISO format (good for data exchange)\nvar isoTime = now.toISOString();\nHMIRuntime.Trace(\"ISO time: \" + isoTime);\n\n// Get timezone offset\nvar timezoneOffset = now.getTimezoneOffset(); // Minutes\nvar offsetHours = timezoneOffset / 60;\nHMIRuntime.Trace(\"Timezone offset: \" + offsetHours + \" hours\");\n\n// Convert local to UTC manually\nvar utcYear = now.getUTCFullYear();\nvar utcMonth = now.getUTCMonth() + 1;\nvar utcDay = now.getUTCDate();\nvar utcHours = now.getUTCHours();\nvar utcMinutes = now.getUTCMinutes();\nvar manualUTC = utcYear + \"-\" + utcMonth + \"-\" + utcDay + \" \" + utcHours + \":\" + utcMinutes;\nHMIRuntime.Trace(\"Manual UTC: \" + manualUTC);\n\n// Create UTC timestamp for global logging\nvar utcTimestamp = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes());\nHMIRuntime.Trace(\"UTC timestamp: \" + utcTimestamp);"
+    },
+    {
+      "id": "conversion-string-number",
+      "title": "String to Number Conversion",
+      "category": "JavaScript Basics",
+      "description": "Convert user input to numeric values safely.",
+      "isCustom": false,
+      "code": "// String to Number Conversion - Siemens WinCC Unified\n// Convert setpoint from user input\nvar userInput = \"75.5\";\nvar setpoint = parseFloat(userInput);\nif (!isNaN(setpoint)) {\n    HMIRuntime.Trace(\"Valid setpoint: \" + setpoint + \"°C\");\n} else {\n    HMIRuntime.Trace(\"Invalid input: \" + userInput);\n}\n\n// Convert integer values\nvar speedInput = \"1500\";\nvar motorSpeed = parseInt(speedInput);\nif (!isNaN(motorSpeed)) {\n    HMIRuntime.Trace(\"Motor speed: \" + motorSpeed + \" RPM\");\n}\n\n// Handle invalid input safely\nvar invalidInput = \"abc123\";\nvar result = parseFloat(invalidInput);\nif (isNaN(result)) {\n    HMIRuntime.Trace(\"Error: Cannot convert '\" + invalidInput + \"' to number\");\n    result = 0; // Use default value\n    HMIRuntime.Trace(\"Using default value: \" + result);\n}\n\n// Convert multiple values from comma-separated string\nvar valuesString = \"10.5,25.0,37.5,42.0\";\nvar valueArray = valuesString.split(\",\");\nvar numbers = [];\nfor (var i = 0; i < valueArray.length; i++) {\n    var num = parseFloat(valueArray[i]);\n    if (!isNaN(num)) {\n        numbers.push(num);\n    }\n}\nHMIRuntime.Trace(\"Numbers: \" + numbers.join(\", \"));"
+    },
+    {
+      "id": "conversion-number-string",
+      "title": "Number to String Conversion",
+      "category": "JavaScript Basics",
+      "description": "Format numbers for display messages.",
+      "isCustom": false,
+      "code": "// Number to String Conversion - Siemens WinCC Unified\n// Convert temperature for display\nvar temperature = 78.456;\nvar tempString = temperature.toString();\nHMIRuntime.Trace(\"Temperature as string: \" + tempString);\n\n// Format with specific decimal places\nvar pressure = 123.456789;\nvar pressureString = pressure.toFixed(2);\nHMIRuntime.Trace(\"Pressure: \" + pressureString + \" bar\");\n\n// Build display message with numbers\nvar motorName = \"Motor 1\";\nvar speed = 1450;\nvar current = 8.5;\nvar statusMessage = motorName + \" running at \" + speed.toString() + \" RPM, \" + current.toString() + \" A\";\nHMIRuntime.Trace(\"Status: \" + statusMessage);\n\n// Convert to scientific notation\nvar largeNumber = 1234567.89;\nvar scientificString = largeNumber.toExponential(2);\nHMIRuntime.Trace(\"Scientific: \" + scientificString);\n\n// Convert to fixed width string (padding)\nvar count = 42;\nvar countString = count.toString();\nwhile (countString.length < 4) {\n    countString = \"0\" + countString; // Add leading zeros\n}\nHMIRuntime.Trace(\"Padded count: \" + countString);"
+    },
+    {
+      "id": "conversion-boolean",
+      "title": "Boolean Conversions",
+      "category": "JavaScript Basics",
+      "description": "Convert different true/false formats from PLC.",
+      "isCustom": false,
+      "code": "// Boolean Conversion - Siemens WinCC Unified\n// Convert PLC values to boolean\nvar plcValue1 = 1;  // PLC sends 1 for true\nvar isRunning = Boolean(plcValue1);\nHMIRuntime.Trace(\"Motor running: \" + isRunning);\n\n// Convert string values\nvar stringValue = \"true\";\nvar boolValue = (stringValue.toLowerCase() === \"true\");\nHMIRuntime.Trace(\"String to bool: \" + boolValue);\n\n// Handle different PLC formats\nvar plcStatus = \"ON\";  // PLC might send ON/OFF\nvar isOn = (plcStatus.toUpperCase() === \"ON\");\nHMIRuntime.Trace(\"Equipment on: \" + isOn);\n\n// Convert numbers to boolean (0 = false, anything else = true)\nvar values = [0, 1, 5, -1, 0.5];\nfor (var i = 0; i < values.length; i++) {\n    var boolResult = Boolean(values[i]);\n    HMIRuntime.Trace(\"Value \" + values[i] + \" as boolean: \" + boolResult);\n}\n\n// Convert boolean back to PLC format\nvar motorEnabled = true;\nvar plcFormat = motorEnabled ? 1 : 0;  // Convert to 1/0 for PLC\nHMIRuntime.Trace(\"PLC format: \" + plcFormat);\n\n// Handle null and undefined\nvar undefinedValue;\nvar nullValue = null;\nHMIRuntime.Trace(\"Undefined as boolean: \" + Boolean(undefinedValue));\nHMIRuntime.Trace(\"Null as boolean: \" + Boolean(nullValue));"
+    },
+    {
+      "id": "loop-for-arrays",
+      "title": "For Loops with Arrays",
+      "category": "JavaScript Basics",
+      "description": "Process multiple tags or equipment with for loops.",
+      "isCustom": false,
+      "code": "// For Loops with Arrays - Siemens WinCC Unified\n// Process multiple motor tags\nvar motorTags = [\"MOTOR_001_Speed\", \"MOTOR_002_Speed\", \"MOTOR_003_Speed\"];\nfor (var i = 0; i < motorTags.length; i++) {\n    var tagName = motorTags[i];\n    var speed = Tags(tagName).Read();\n    HMIRuntime.Trace(\"Motor \" + (i + 1) + \" speed: \" + speed + \" RPM\");\n}\n\n// Check multiple alarm states\nvar alarmTags = [\"ALM_TEMP_HIGH\", \"ALM_PRESSURE_LOW\", \"ALM_MOTOR_FAULT\"];\nvar activeAlarms = 0;\nfor (var i = 0; i < alarmTags.length; i++) {\n    var alarmState = Tags(alarmTags[i]).Read();\n    if (alarmState === true) {\n        activeAlarms = activeAlarms + 1;\n        HMIRuntime.Trace(\"Active alarm: \" + alarmTags[i]);\n    }\n}\nHMIRuntime.Trace(\"Total active alarms: \" + activeAlarms);\n\n// Update multiple setpoints\nvar setpointTags = [\"SP_TEMP_1\", \"SP_TEMP_2\", \"SP_TEMP_3\"];\nvar newSetpoint = 75.0;\nfor (var i = 0; i < setpointTags.length; i++) {\n    Tags(setpointTags[i]).Write(newSetpoint);\n    HMIRuntime.Trace(\"Updated \" + setpointTags[i] + \" to \" + newSetpoint);\n}\n\n// Process equipment status list\nvar equipment = [\"PUMP_001\", \"VALVE_002\", \"MOTOR_003\"];\nfor (var i = 0; i < equipment.length; i++) {\n    var statusTag = equipment[i] + \"_Status\";\n    var status = Tags(statusTag).Read();\n    HMIRuntime.Trace(equipment[i] + \" status: \" + status);\n}"
+    },
+    {
+      "id": "loop-while",
+      "title": "While Loops for Conditions",
+      "category": "JavaScript Basics",
+      "description": "Wait for equipment status changes with while loops.",
+      "isCustom": false,
+      "code": "// While Loops - Siemens WinCC Unified\n// Wait for motor to start (with timeout for safety)\nvar motorRunning = false;\nvar timeout = 0;\nvar maxTimeout = 10; // 10 seconds maximum wait\n\nwhile (motorRunning === false && timeout < maxTimeout) {\n    motorRunning = Tags(\"MOTOR_001_Running\").Read();\n    if (motorRunning === false) {\n        HMIRuntime.Trace(\"Waiting for motor to start... (\" + timeout + \"s)\");\n        // In real application, use a timer instead of blocking\n        timeout = timeout + 1;\n    }\n}\n\nif (motorRunning) {\n    HMIRuntime.Trace(\"Motor started successfully!\");\n} else {\n    HMIRuntime.Trace(\"Timeout: Motor failed to start\");\n}\n\n// Process queue until empty\nvar queueLength = Tags(\"QUEUE_LENGTH\").Read();\nwhile (queueLength > 0) {\n    HMIRuntime.Trace(\"Processing queue item, remaining: \" + queueLength);\n    // Process one item (this would trigger PLC logic)\n    Tags(\"PROCESS_NEXT_ITEM\").Write(true);\n    \n    // Check queue length again\n    queueLength = Tags(\"QUEUE_LENGTH\").Read();\n}\nHMIRuntime.Trace(\"Queue processing complete\");\n\n// Wait for stable temperature reading\nvar temperature = Tags(\"TEMP_SENSOR_1\").Read();\nvar previousTemp = temperature;\nvar stableCount = 0;\nvar requiredStableReadings = 3;\n\nwhile (stableCount < requiredStableReadings) {\n    temperature = Tags(\"TEMP_SENSOR_1\").Read();\n    if (Math.abs(temperature - previousTemp) < 0.5) {\n        stableCount = stableCount + 1;\n    } else {\n        stableCount = 0; // Reset if temperature changed\n    }\n    previousTemp = temperature;\n    HMIRuntime.Trace(\"Temperature: \" + temperature + \", Stable readings: \" + stableCount);\n}\nHMIRuntime.Trace(\"Temperature stabilized at: \" + temperature + \"°C\");"
+    },
+    {
+      "id": "loop-break-continue",
+      "title": "Break and Continue Logic",
+      "category": "JavaScript Basics",
+      "description": "Control loop execution with break and continue.",
+      "isCustom": false,
+      "code": "// Break and Continue Logic - Siemens WinCC Unified\n// Check equipment list, stop on first error\nvar equipment = [\"MOTOR_001\", \"PUMP_002\", \"VALVE_003\", \"MOTOR_004\"];\nvar errorFound = false;\n\nfor (var i = 0; i < equipment.length; i++) {\n    var statusTag = equipment[i] + \"_Status\";\n    var status = Tags(statusTag).Read();\n    \n    if (status === \"ERROR\") {\n        HMIRuntime.Trace(\"ERROR found in \" + equipment[i] + \" - stopping check\");\n        errorFound = true;\n        break; // Exit loop immediately\n    }\n    \n    HMIRuntime.Trace(equipment[i] + \" status: \" + status + \" - OK\");\n}\n\nif (errorFound) {\n    HMIRuntime.Trace(\"Equipment check failed - manual intervention required\");\n} else {\n    HMIRuntime.Trace(\"All equipment status OK\");\n}\n\n// Skip offline equipment in processing\nvar sensors = [\"TEMP_001\", \"TEMP_002\", \"TEMP_003\", \"TEMP_004\"];\nvar totalTemp = 0;\nvar validReadings = 0;\n\nfor (var i = 0; i < sensors.length; i++) {\n    var onlineStatus = Tags(sensors[i] + \"_Online\").Read();\n    \n    if (onlineStatus === false) {\n        HMIRuntime.Trace(\"Skipping offline sensor: \" + sensors[i]);\n        continue; // Skip to next iteration\n    }\n    \n    var temperature = Tags(sensors[i] + \"_Value\").Read();\n    totalTemp = totalTemp + temperature;\n    validReadings = validReadings + 1;\n    HMIRuntime.Trace(sensors[i] + \" temperature: \" + temperature + \"°C\");\n}\n\nif (validReadings > 0) {\n    var averageTemp = totalTemp / validReadings;\n    HMIRuntime.Trace(\"Average temperature: \" + averageTemp.toFixed(2) + \"°C (\" + validReadings + \" sensors)\");\n} else {\n    HMIRuntime.Trace(\"No valid temperature readings available\");\n}"
+    },
+    {
+      "id": "conditional-if-else",
+      "title": "If-Else Chain Logic",
+      "category": "JavaScript Basics",
+      "description": "Handle multiple equipment states with if-else chains.",
+      "isCustom": false,
+      "code": "// If-Else Chain Logic - Siemens WinCC Unified\n// Equipment state handling\nvar equipmentState = Tags(\"MOTOR_001_State\").Read();\n\nif (equipmentState === \"RUNNING\") {\n    HMIRuntime.Trace(\"Motor is running normally\");\n    // Set status indicator to green\n    Tags(\"STATUS_LIGHT\").Write(\"GREEN\");\n} else if (equipmentState === \"STARTING\") {\n    HMIRuntime.Trace(\"Motor is starting up\");\n    Tags(\"STATUS_LIGHT\").Write(\"YELLOW\");\n} else if (equipmentState === \"STOPPING\") {\n    HMIRuntime.Trace(\"Motor is stopping\");\n    Tags(\"STATUS_LIGHT\").Write(\"YELLOW\");\n} else if (equipmentState === \"FAULT\") {\n    HMIRuntime.Trace(\"Motor fault detected - check alarms\");\n    Tags(\"STATUS_LIGHT\").Write(\"RED\");\n} else if (equipmentState === \"MAINTENANCE\") {\n    HMIRuntime.Trace(\"Motor in maintenance mode\");\n    Tags(\"STATUS_LIGHT\").Write(\"BLUE\");\n} else {\n    HMIRuntime.Trace(\"Unknown motor state: \" + equipmentState);\n    Tags(\"STATUS_LIGHT\").Write(\"RED\");\n}\n\n// Temperature range checking\nvar temperature = Tags(\"TEMP_SENSOR_1\").Read();\nvar tempStatus = \"\";\n\nif (temperature < 0) {\n    tempStatus = \"FREEZING\";\n    HMIRuntime.Trace(\"WARNING: Temperature below freezing point\");\n} else if (temperature >= 0 && temperature < 20) {\n    tempStatus = \"COLD\";\n    HMIRuntime.Trace(\"Temperature is cold\");\n} else if (temperature >= 20 && temperature < 30) {\n    tempStatus = \"NORMAL\";\n    HMIRuntime.Trace(\"Temperature is normal\");\n} else if (temperature >= 30 && temperature < 40) {\n    tempStatus = \"WARM\";\n    HMIRuntime.Trace(\"Temperature is warm\");\n} else {\n    tempStatus = \"HOT\";\n    HMIRuntime.Trace(\"ALARM: Temperature is too hot!\");\n}\n\nTags(\"TEMP_STATUS\").Write(tempStatus);"
+    },
+    {
+      "id": "conditional-switch",
+      "title": "Switch Statement Logic",
+      "category": "JavaScript Basics",
+      "description": "Handle different equipment modes with switch statements.",
+      "isCustom": false,
+      "code": "// Switch Statement Logic - Siemens WinCC Unified\n// Handle different alarm types\nvar alarmType = Tags(\"CURRENT_ALARM_TYPE\").Read();\n\nswitch (alarmType) {\n    case \"TEMPERATURE_HIGH\":\n        HMIRuntime.Trace(\"High temperature alarm - reducing heating\");\n        Tags(\"HEATER_SETPOINT\").Write(70);\n        Tags(\"COOLING_FAN\").Write(true);\n        break;\n        \n    case \"TEMPERATURE_LOW\":\n        HMIRuntime.Trace(\"Low temperature alarm - increasing heating\");\n        Tags(\"HEATER_SETPOINT\").Write(90);\n        Tags(\"COOLING_FAN\").Write(false);\n        break;\n        \n    case \"PRESSURE_HIGH\":\n        HMIRuntime.Trace(\"High pressure alarm - opening relief valve\");\n        Tags(\"RELIEF_VALVE\").Write(true);\n        break;\n        \n    case \"PRESSURE_LOW\":\n        HMIRuntime.Trace(\"Low pressure alarm - starting backup pump\");\n        Tags(\"BACKUP_PUMP\").Write(true);\n        break;\n        \n    case \"MOTOR_FAULT\":\n        HMIRuntime.Trace(\"Motor fault - stopping system\");\n        Tags(\"SYSTEM_SHUTDOWN\").Write(true);\n        break;\n        \n    default:\n        HMIRuntime.Trace(\"Unknown alarm type: \" + alarmType);\n        break;\n}\n\n// Handle production modes\nvar productionMode = Tags(\"PRODUCTION_MODE\").Read();\n\nswitch (productionMode) {\n    case 1:\n        HMIRuntime.Trace(\"Production Mode: Standard\");\n        Tags(\"CONVEYOR_SPEED\").Write(100);\n        Tags(\"QUALITY_CHECK\").Write(true);\n        break;\n        \n    case 2:\n        HMIRuntime.Trace(\"Production Mode: High Speed\");\n        Tags(\"CONVEYOR_SPEED\").Write(150);\n        Tags(\"QUALITY_CHECK\").Write(false);\n        break;\n        \n    case 3:\n        HMIRuntime.Trace(\"Production Mode: Quality Focus\");\n        Tags(\"CONVEYOR_SPEED\").Write(75);\n        Tags(\"QUALITY_CHECK\").Write(true);\n        break;\n        \n    case 0:\n    default:\n        HMIRuntime.Trace(\"Production Mode: Stopped\");\n        Tags(\"CONVEYOR_SPEED\").Write(0);\n        Tags(\"QUALITY_CHECK\").Write(false);\n        break;\n}"
+    },
+    {
+      "id": "conditional-comparison",
+      "title": "Comparison Operations",
+      "category": "JavaScript Basics",
+      "description": "Compare values for limit checking and safety.",
+      "isCustom": false,
+      "code": "// Comparison Operations - Siemens WinCC Unified\n// Temperature limit checking\nvar currentTemp = Tags(\"TEMP_SENSOR_1\").Read();\nvar tempHighLimit = 100.0;\nvar tempLowLimit = 10.0;\n\n// Greater than comparison\nif (currentTemp > tempHighLimit) {\n    HMIRuntime.Trace(\"ALARM: Temperature too high (\" + currentTemp + \"°C > \" + tempHighLimit + \"°C)\");\n    Tags(\"TEMP_HIGH_ALARM\").Write(true);\n}\n\n// Less than comparison\nif (currentTemp < tempLowLimit) {\n    HMIRuntime.Trace(\"ALARM: Temperature too low (\" + currentTemp + \"°C < \" + tempLowLimit + \"°C)\");\n    Tags(\"TEMP_LOW_ALARM\").Write(true);\n}\n\n// Greater than or equal comparison\nvar pressure = Tags(\"PRESSURE_SENSOR_1\").Read();\nvar safetyLimit = 150.0;\nif (pressure >= safetyLimit) {\n    HMIRuntime.Trace(\"WARNING: Pressure at or above safety limit (\" + pressure + \" >= \" + safetyLimit + \")\");\n    Tags(\"PRESSURE_WARNING\").Write(true);\n}\n\n// Less than or equal comparison\nvar motorSpeed = Tags(\"MOTOR_001_Speed\").Read();\nvar minSpeed = 100;\nif (motorSpeed <= minSpeed) {\n    HMIRuntime.Trace(\"Motor speed low (\" + motorSpeed + \" <= \" + minSpeed + \")\");\n    Tags(\"LOW_SPEED_WARNING\").Write(true);\n}\n\n// Equality comparison\nvar equipmentStatus = Tags(\"PUMP_001_Status\").Read();\nif (equipmentStatus === \"RUNNING\") {\n    HMIRuntime.Trace(\"Pump is running normally\");\n} else if (equipmentStatus === \"STOPPED\") {\n    HMIRuntime.Trace(\"Pump is stopped\");\n}\n\n// Not equal comparison\nvar alarmState = Tags(\"SYSTEM_ALARM\").Read();\nif (alarmState !== \"OK\") {\n    HMIRuntime.Trace(\"System alarm active: \" + alarmState);\n    Tags(\"ALARM_INDICATOR\").Write(true);\n}\n\n// Range checking (between values)\nvar optimalTemp = 75.0;\nvar tolerance = 5.0;\nif (currentTemp >= (optimalTemp - tolerance) && currentTemp <= (optimalTemp + tolerance)) {\n    HMIRuntime.Trace(\"Temperature within optimal range\");\n    Tags(\"TEMP_OPTIMAL\").Write(true);\n} else {\n    HMIRuntime.Trace(\"Temperature outside optimal range\");\n    Tags(\"TEMP_OPTIMAL\").Write(false);\n}"
+    },
+    {
+      "id": "error-try-catch",
+      "title": "Try-Catch Error Handling",
+      "category": "Best Practices",
+      "description": "Handle PLC communication errors safely.",
+      "isCustom": false,
+      "code": "// Try-Catch Error Handling - Siemens WinCC Unified\n// Safe tag reading with error handling\nfunction safeReadTag(tagName) {\n    try {\n        var value = Tags(tagName).Read();\n        HMIRuntime.Trace(\"Successfully read \" + tagName + \": \" + value);\n        return value;\n    } catch (error) {\n        HMIRuntime.Trace(\"Error reading \" + tagName + \": \" + error.message);\n        return null; // Return safe default value\n    }\n}\n\n// Safe tag writing with error handling\nfunction safeWriteTag(tagName, value) {\n    try {\n        Tags(tagName).Write(value);\n        HMIRuntime.Trace(\"Successfully wrote \" + tagName + \": \" + value);\n        return true;\n    } catch (error) {\n        HMIRuntime.Trace(\"Error writing \" + tagName + \": \" + error.message);\n        return false;\n    }\n}\n\n// Example usage with error handling\nvar motorSpeed = safeReadTag(\"MOTOR_001_Speed\");\nif (motorSpeed !== null) {\n    // Only proceed if read was successful\n    var newSetpoint = motorSpeed + 100;\n    var writeSuccess = safeWriteTag(\"MOTOR_001_Setpoint\", newSetpoint);\n    \n    if (writeSuccess) {\n        HMIRuntime.Trace(\"Motor setpoint updated successfully\");\n    } else {\n        HMIRuntime.Trace(\"Failed to update motor setpoint\");\n    }\n} else {\n    HMIRuntime.Trace(\"Cannot update setpoint - failed to read current speed\");\n}\n\n// Handle screen navigation errors\ntry {\n    HMIRuntime.Screens.Show(\"DetailedView\");\n    HMIRuntime.Trace(\"Screen navigation successful\");\n} catch (error) {\n    HMIRuntime.Trace(\"Screen navigation failed: \" + error.message);\n    // Try alternative screen\n    try {\n        HMIRuntime.Screens.Show(\"MainView\");\n        HMIRuntime.Trace(\"Fallback screen loaded\");\n    } catch (fallbackError) {\n        HMIRuntime.Trace(\"All screen navigation failed: \" + fallbackError.message);\n    }\n}"
+    },
+    {
+      "id": "error-logging",
+      "title": "Error Logging Strategies",
+      "category": "Best Practices",
+      "description": "Log errors for debugging and system monitoring.",
+      "isCustom": false,
+      "code": "// Error Logging Strategies - Siemens WinCC Unified\n// Enhanced error logging function\nfunction logError(errorType, location, message, additionalData) {\n    var timestamp = new Date().toISOString();\n    var logEntry = \"[\" + timestamp + \"] ERROR - \" + errorType + \" in \" + location + \": \" + message;\n    \n    if (additionalData) {\n        logEntry = logEntry + \" | Data: \" + JSON.stringify(additionalData);\n    }\n    \n    // Log to HMI Runtime\n    HMIRuntime.Trace(logEntry);\n    \n    // Also write to error counter tag\n    try {\n        var errorCount = Tags(\"ERROR_COUNT\").Read();\n        Tags(\"ERROR_COUNT\").Write(errorCount + 1);\n        Tags(\"LAST_ERROR_TIME\").Write(timestamp);\n        Tags(\"LAST_ERROR_MESSAGE\").Write(message);\n    } catch (tagError) {\n        HMIRuntime.Trace(\"Failed to update error tags: \" + tagError.message);\n    }\n}\n\n// Log different types of errors\nfunction processMotorData() {\n    try {\n        var motorSpeed = Tags(\"MOTOR_001_Speed\").Read();\n        \n        if (motorSpeed < 0) {\n            logError(\"DATA_VALIDATION\", \"processMotorData\", \"Invalid motor speed\", {speed: motorSpeed});\n            return false;\n        }\n        \n        // Process successful\n        HMIRuntime.Trace(\"Motor data processed successfully: \" + motorSpeed + \" RPM\");\n        return true;\n        \n    } catch (error) {\n        logError(\"COMMUNICATION\", \"processMotorData\", \"Failed to read motor speed\", {error: error.message});\n        return false;\n    }\n}\n\n// Usage examples\nprocessMotorData();\n\n// Log system events\nlogError(\"SYSTEM\", \"Startup\", \"Application started\", {version: \"1.0.0\"});\nlogError(\"USER\", \"Login\", \"Invalid user credentials\", {username: \"operator1\"});\nlogError(\"HARDWARE\", \"SensorCheck\", \"Sensor not responding\", {sensor: \"TEMP_001\"});\n\n// Performance logging\nvar startTime = new Date().getTime();\n// ... some operation ...\nvar endTime = new Date().getTime();\nvar duration = endTime - startTime;\n\nif (duration > 1000) { // Log slow operations\n    logError(\"PERFORMANCE\", \"DataProcessing\", \"Operation took too long\", {duration: duration + \"ms\"});\n}"
+    },
+    {
+      "id": "error-retry",
+      "title": "Retry Logic for Failed Operations",
+      "category": "Best Practices",
+      "description": "Re-attempt failed operations with retry logic.",
+      "isCustom": false,
+      "code": "// Retry Logic - Siemens WinCC Unified\n// Retry function with configurable attempts\nfunction retryOperation(operationFunction, maxRetries, delayMs) {\n    var attempt = 0;\n    \n    while (attempt < maxRetries) {\n        try {\n            var result = operationFunction();\n            HMIRuntime.Trace(\"Operation successful on attempt \" + (attempt + 1));\n            return result;\n        } catch (error) {\n            attempt = attempt + 1;\n            HMIRuntime.Trace(\"Attempt \" + attempt + \" failed: \" + error.message);\n            \n            if (attempt >= maxRetries) {\n                HMIRuntime.Trace(\"All \" + maxRetries + \" attempts failed - giving up\");\n                throw error; // Re-throw the last error\n            }\n            \n            HMIRuntime.Trace(\"Waiting \" + delayMs + \"ms before retry...\");\n            // In real application, use a proper delay mechanism\n            // This is simplified for demonstration\n        }\n    }\n}\n\n// Example: Retry tag writing\nfunction writeTagWithRetry(tagName, value) {\n    function writeOperation() {\n        Tags(tagName).Write(value);\n        return true;\n    }\n    \n    try {\n        return retryOperation(writeOperation, 3, 1000); // 3 attempts, 1 second delay\n    } catch (error) {\n        HMIRuntime.Trace(\"Failed to write \" + tagName + \" after all retries\");\n        return false;\n    }\n}\n\n// Example: Retry screen navigation\nfunction navigateWithRetry(screenName) {\n    function navigationOperation() {\n        HMIRuntime.Screens.Show(screenName);\n        return true;\n    }\n    \n    try {\n        return retryOperation(navigationOperation, 2, 500); // 2 attempts, 0.5 second delay\n    } catch (error) {\n        HMIRuntime.Trace(\"Failed to navigate to \" + screenName + \" after all retries\");\n        return false;\n    }\n}\n\n// Usage examples\nvar writeSuccess = writeTagWithRetry(\"MOTOR_001_Setpoint\", 1500);\nif (writeSuccess) {\n    HMIRuntime.Trace(\"Motor setpoint updated successfully\");\n} else {\n    HMIRuntime.Trace(\"Failed to update motor setpoint after retries\");\n}\n\nvar navSuccess = navigateWithRetry(\"AlarmView\");\nif (!navSuccess) {\n    HMIRuntime.Trace(\"Navigation failed - user will need to navigate manually\");\n}"
+    },
+    {
+      "id": "object-creation",
+      "title": "Object Creation and Access",
+      "category": "JavaScript Basics",
+      "description": "Create equipment configuration objects for data management.",
+      "isCustom": false,
+      "code": "// Object Creation and Access - Siemens WinCC Unified\n// Create motor configuration object\nvar motor1 = {\n    name: \"Motor 1\",\n    tagPrefix: \"MOTOR_001\",\n    maxSpeed: 1800,\n    minSpeed: 100,\n    normalSpeed: 1450,\n    location: \"Building A - Line 1\",\n    isRunning: false\n};\n\n// Access object properties\nHMIRuntime.Trace(\"Motor name: \" + motor1.name);\nHMIRuntime.Trace(\"Location: \" + motor1.location);\nHMIRuntime.Trace(\"Max speed: \" + motor1.maxSpeed + \" RPM\");\n\n// Update object properties\nmotor1.isRunning = true;\nmotor1.currentSpeed = 1450;\nHMIRuntime.Trace(\"Motor status updated - Running: \" + motor1.isRunning);\n\n// Create alarm configuration object\nvar tempAlarm = {\n    id: \"TEMP_HIGH_001\",\n    description: \"High temperature in Tank 1\",\n    setpoint: 85.0,\n    hysteresis: 2.0,\n    priority: \"HIGH\",\n    isActive: false,\n    acknowledgeRequired: true\n};\n\n// Create recipe object\nvar recipe1 = {\n    name: \"Standard Mix\",\n    version: \"1.2\",\n    parameters: {\n        temperature: 75.0,\n        pressure: 2.5,\n        mixTime: 300,\n        speed: 120\n    },\n    createdBy: \"Operator\",\n    createdDate: \"2024-12-27\"\n};\n\n// Access nested properties\nHMIRuntime.Trace(\"Recipe: \" + recipe1.name);\nHMIRuntime.Trace(\"Temperature: \" + recipe1.parameters.temperature + \"°C\");\nHMIRuntime.Trace(\"Mix time: \" + recipe1.parameters.mixTime + \" seconds\");\n\n// Modify nested properties\nrecipe1.parameters.temperature = 80.0;\nHMIRuntime.Trace(\"Updated temperature: \" + recipe1.parameters.temperature + \"°C\");"
+    },
+    {
+      "id": "object-properties",
+      "title": "Property Checking and Validation",
+      "category": "JavaScript Basics",
+      "description": "Safely check if object properties exist before using them.",
+      "isCustom": false,
+      "code": "// Property Checking - Siemens WinCC Unified\n// Equipment configuration with property validation\nvar equipment = {\n    name: \"Pump 1\",\n    type: \"Centrifugal\",\n    maxFlow: 500,\n    location: \"Building B\"\n};\n\n// Check if property exists before using\nif (equipment.hasOwnProperty(\"maxFlow\")) {\n    HMIRuntime.Trace(\"Max flow rate: \" + equipment.maxFlow + \" L/min\");\n} else {\n    HMIRuntime.Trace(\"Max flow rate not configured\");\n}\n\n// Safe property access function\nfunction getPropertySafely(obj, propertyName, defaultValue) {\n    if (obj.hasOwnProperty(propertyName)) {\n        return obj[propertyName];\n    } else {\n        HMIRuntime.Trace(\"Property '\" + propertyName + \"' not found, using default: \" + defaultValue);\n        return defaultValue;\n    }\n}\n\n// Usage examples\nvar motorSpeed = getPropertySafely(equipment, \"speed\", 0);\nvar equipmentType = getPropertySafely(equipment, \"type\", \"Unknown\");\nvar maintenanceDate = getPropertySafely(equipment, \"lastMaintenance\", \"Never\");\n\nHMIRuntime.Trace(\"Motor speed: \" + motorSpeed);\nHMIRuntime.Trace(\"Equipment type: \" + equipmentType);\nHMIRuntime.Trace(\"Last maintenance: \" + maintenanceDate);\n\n// Validate configuration completeness\nvar requiredProperties = [\"name\", \"type\", \"location\"];\nvar isValid = true;\n\nfor (var i = 0; i < requiredProperties.length; i++) {\n    var property = requiredProperties[i];\n    if (!equipment.hasOwnProperty(property)) {\n        HMIRuntime.Trace(\"ERROR: Missing required property: \" + property);\n        isValid = false;\n    }\n}\n\nif (isValid) {\n    HMIRuntime.Trace(\"Equipment configuration is valid\");\n} else {\n    HMIRuntime.Trace(\"Equipment configuration is incomplete\");\n}\n\n// Check for undefined or null values\nif (equipment.name && equipment.name !== \"\") {\n    HMIRuntime.Trace(\"Valid equipment name: \" + equipment.name);\n} else {\n    HMIRuntime.Trace(\"Equipment name is empty or invalid\");\n}"
+    },
+    {
+      "id": "object-iteration",
+      "title": "Object Property Iteration",
+      "category": "JavaScript Basics",
+      "description": "Loop through object properties for configuration processing.",
+      "isCustom": false,
+      "code": "// Object Iteration - Siemens WinCC Unified\n// Equipment configuration object\nvar equipmentConfig = {\n    name: \"Conveyor System 1\",\n    speed: 120,\n    length: 50,\n    width: 2.5,\n    location: \"Production Line A\",\n    status: \"Running\",\n    lastMaintenance: \"2024-11-15\"\n};\n\n// Iterate through all properties\nHMIRuntime.Trace(\"Equipment Configuration:\");\nfor (var property in equipmentConfig) {\n    var value = equipmentConfig[property];\n    HMIRuntime.Trace(\"  \" + property + \": \" + value);\n}\n\n// Process specific types of properties\nvar numericProperties = [];\nvar stringProperties = [];\n\nfor (var property in equipmentConfig) {\n    var value = equipmentConfig[property];\n    if (typeof value === \"number\") {\n        numericProperties.push(property + \": \" + value);\n    } else if (typeof value === \"string\") {\n        stringProperties.push(property + \": \" + value);\n    }\n}\n\nHMIRuntime.Trace(\"Numeric properties: \" + numericProperties.join(\", \"));\nHMIRuntime.Trace(\"String properties: \" + stringProperties.join(\", \"));\n\n// Create summary report\nvar alarmSettings = {\n    tempHigh: 85.0,\n    tempLow: 15.0,\n    pressureHigh: 10.0,\n    pressureLow: 0.5,\n    flowLow: 50.0\n};\n\nvar alarmReport = \"Alarm Settings Report:\\n\";\nfor (var alarmType in alarmSettings) {\n    var limit = alarmSettings[alarmType];\n    alarmReport = alarmReport + \"- \" + alarmType + \": \" + limit + \"\\n\";\n}\nHMIRuntime.Trace(alarmReport);\n\n// Count properties\nvar propertyCount = 0;\nfor (var property in equipmentConfig) {\n    propertyCount = propertyCount + 1;\n}\nHMIRuntime.Trace(\"Total configuration properties: \" + propertyCount);\n\n// Find properties containing specific text\nvar locationProperties = [];\nfor (var property in equipmentConfig) {\n    if (property.toLowerCase().indexOf(\"location\") !== -1 || property.toLowerCase().indexOf(\"name\") !== -1) {\n        locationProperties.push(property + \": \" + equipmentConfig[property]);\n    }\n}\nHMIRuntime.Trace(\"Location-related properties: \" + locationProperties.join(\", \"));"
     }
   ]
 }

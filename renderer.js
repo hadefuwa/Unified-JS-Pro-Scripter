@@ -60,6 +60,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     rendererLogger.log('Unified JS Pro - Enhanced Template Browser loaded');
     
+    // Add global function to trigger template reload
+    window.triggerTemplateReload = function() {
+        rendererLogger.log('Template reload triggered - re-rendering categories...');
+        renderCategories();
+        updateTemplateCount();
+    };
+    
     // Initialize the app
     init();
     
