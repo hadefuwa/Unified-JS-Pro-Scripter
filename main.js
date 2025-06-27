@@ -72,7 +72,8 @@ function createWindow() {
       contextIsolation: true,    // Security: Isolate contexts
       preload: path.join(__dirname, 'preload.js'),  // Load our preload script
       webSecurity: true,         // Keep security enabled
-      backgroundThrottling: false // Disable background throttling
+      backgroundThrottling: false, // Disable background throttling
+      devTools: true             // Explicitly enable DevTools
     },
     // Remove the default menu bar completely
     autoHideMenuBar: true,     // Hide menu bar (can be shown with Alt key)
@@ -112,9 +113,23 @@ function createWindow() {
     }
   });
 
-  // Developer tools disabled for production
-  // mainWindow.webContents.openDevTools();
-  // log('DevTools opened');
+  // Developer tools available with Ctrl+Shift+I (but not opened automatically)
+  // You can now press Ctrl+Shift+I to open DevTools for debugging
+  log('DevTools available with Ctrl+Shift+I');
+
+  // Add keyboard shortcut for DevTools
+  mainWindow.webContents.on('before-input-event', (event, input) => {
+    if (input.control && input.shift && input.key.toLowerCase() === 'i') {
+      log('DevTools keyboard shortcut triggered');
+      if (mainWindow.webContents.isDevToolsOpened()) {
+        mainWindow.webContents.closeDevTools();
+        log('DevTools closed');
+      } else {
+        mainWindow.webContents.openDevTools();
+        log('DevTools opened');
+      }
+    }
+  });
 
   // Clean up when window is closed
   mainWindow.on('closed', function () {

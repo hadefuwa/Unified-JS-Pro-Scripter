@@ -530,11 +530,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Admin Functions
     function openAdminModal() {
-        loadAdminSettings();
-        adminModal.style.display = 'block';
-        switchAdminTab('categories');
-        updateAdminStatistics();
-        loadCategoryList();
+        // Navigate to the admin page
+        window.location.href = 'admin.html';
     }
     
     function closeAdminModalFunc() {
