@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Unified JS Pro - Siemens WinCC Templates</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon2.png">
+    <link rel="shortcut icon" href="assets/favicon2.png">
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+        }
+        
+        .header {
+            background: #2c3e50; color: white; padding: 15px 20px;
+            display: flex; align-items: center;
+        }
+        
+        .header h1 { font-size: 24px; margin-right: 20px; }
+        
+        .siemens-badge {
+            background: #00d4aa; color: white; padding: 5px 12px;
+            border-radius: 15px; font-size: 12px; font-weight: bold;
+        }
+        
+        .header-actions {
+            margin-left: auto; display: flex; gap: 10px; align-items: center;
+        }
+        
+        .header-btn {
+            background: #3498db; color: white; border: none;
+            padding: 8px 15px; border-radius: 5px; cursor: pointer;
+            font-size: 12px; font-weight: bold; transition: all 0.3s;
+        }
+        
+        .header-btn:hover { background: #2980b9; }
+        .header-btn.add { background: #27ae60; }
+        .header-btn.add:hover { background: #229954; }
+        
+        .main-container { display: flex; flex: 1; height: calc(100vh - 140px); }
+        
+        .template-sidebar {
+            width: 380px; background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1); overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            background: #ecf0f1; padding: 15px 20px; border-bottom: 1px solid #bdc3c7;
+            display: flex; align-items: center; gap: 10px;
+        }
+        
+        .search-box {
+            flex: 1; padding: 8px 12px; border: 1px solid #bdc3c7;
+            border-radius: 5px; font-size: 13px;
+        }
+        
+        .category { border-bottom: 1px solid #ecf0f1; }
+        
+        .category-header {
+            background: #34495e; color: white; padding: 15px;
+            font-size: 16px; font-weight: bold; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        
+        .category-header:hover { background: #2c3e50; }
+        
+        .category-toggle {
+            font-size: 12px; transition: transform 0.3s;
+        }
+        
+        .category.collapsed .category-toggle { transform: rotate(-90deg); }
+        .category.collapsed .category-templates { display: none; }
+        
+        .template-item {
+            padding: 15px 20px; cursor: pointer;
+            border-bottom: 1px solid #ecf0f1; transition: all 0.3s;
+            position: relative;
+        }
+        
+        .template-item:hover { background: #f8f9fa; transform: translateX(5px); }
+        .template-item.active { background: #3498db; color: white; }
+        
+        .template-title { font-weight: bold; margin-bottom: 5px; font-size: 14px; }
+        .template-desc { font-size: 12px; color: #7f8c8d; line-height: 1.4; }
+        .template-item.active .template-desc { color: #ecf0f1; }
+        
+        .template-badge {
+            position: absolute; top: 10px; right: 10px;
+            background: #e74c3c; color: white; padding: 2px 6px;
+            border-radius: 10px; font-size: 10px; font-weight: bold;
+        }
+        
+        .template-badge.custom { background: #f39c12; }
+        
+        .code-area { flex: 1; display: flex; flex-direction: column; background: white; }
+        
+        .description-area {
+            background: #f8f9fa; padding: 15px 20px; border-bottom: 1px solid #e9ecef;
+            font-size: 13px; line-height: 1.5; color: #495057;
+        }
+        
+        .description-title {
+            font-weight: bold; color: #2c3e50; margin-bottom: 8px;
+        }
+        
+        .toolbar {
+            background: #ecf0f1; padding: 15px 20px;
+            border-bottom: 1px solid #bdc3c7; display: flex; gap: 10px; align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            background: #3498db; color: white; border: none;
+            padding: 10px 20px; border-radius: 5px; cursor: pointer;
+            font-size: 14px; font-weight: bold; transition: all 0.3s;
+        }
+        
+        .btn:hover { background: #2980b9; transform: translateY(-2px); }
+        .btn.copy { background: #27ae60; }
+        .btn.copy:hover { background: #229954; }
+        .btn.edit { background: #f39c12; }
+        .btn.edit:hover { background: #e67e22; }
+        .btn.delete { background: #e74c3c; }
+        .btn.delete:hover { background: #c0392b; }
+        
+        .code-display {
+            flex: 1; font-family: 'Consolas', monospace; font-size: 14px;
+            border: none; padding: 25px; resize: none; outline: none;
+            background: #2d3748; color: #e2e8f0; line-height: 1.6; white-space: pre-wrap;
+            overflow-y: auto;
+        }
+        
+        /* Syntax highlighting container */
+        .code-container {
+            flex: 1; position: relative; background: #2d3748;
+        }
+        
+        .code-highlighted {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            padding: 25px; font-family: 'Consolas', monospace; font-size: 14px;
+            line-height: 1.6; overflow-y: auto; background: transparent;
+            pointer-events: none; z-index: 1;
+        }
+        
+        .code-display {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            padding: 25px; font-family: 'Consolas', monospace; font-size: 14px;
+            border: none; resize: none; outline: none;
+            background: transparent; color: transparent; caret-color: #e2e8f0;
+            line-height: 1.6; white-space: pre-wrap; z-index: 2;
+        }
+        
+        /* Override Prism theme colors for better visibility */
+        .token.comment { color: #718096; }
+        .token.string { color: #68d391; }
+        .token.number { color: #f6ad55; }
+        .token.keyword { color: #9f7aea; }
+        .token.function { color: #63b3ed; }
+        .token.operator { color: #f687b3; }
+        .token.punctuation { color: #e2e8f0; }
+        
+        .status-bar {
+            background: #34495e; color: white; padding: 10px 20px;
+            font-size: 12px; display: flex; justify-content: space-between; align-items: center;
+        }
+        
+        .footer {
+            background: #1a252f; color: #bdc3c7; padding: 8px 20px;
+            font-size: 11px; text-align: center; border-top: 1px solid #34495e;
+        }
+        
+        .copy-feedback {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #27ae60; color: white; padding: 15px 30px;
+            border-radius: 10px; font-weight: bold; z-index: 1000;
+            opacity: 0; transition: opacity 0.3s;
+        }
+        
+        .copy-feedback.show { opacity: 1; }
+        
+        /* Modal Styles */
+        .modal {
+            display: none; position: fixed; z-index: 2000; left: 0; top: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background: white; margin: 5% auto; padding: 0; width: 80%; max-width: 600px;
+            border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            background: #3498db; color: white; padding: 20px;
+            border-radius: 10px 10px 0 0; display: flex; justify-content: space-between;
+        }
+        
+        .modal-header h2 { margin: 0; }
+        
+        .close-btn {
+            background: none; border: none; color: white; font-size: 24px;
+            cursor: pointer; padding: 0; width: 30px; height: 30px;
+        }
+        
+        .modal-body { padding: 20px; }
+        
+        .form-group { margin-bottom: 15px; }
+        
+        .form-group label {
+            display: block; margin-bottom: 5px; font-weight: bold; color: #2c3e50;
+        }
+        
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 10px; border: 1px solid #bdc3c7;
+            border-radius: 5px; font-size: 14px; font-family: inherit;
+        }
+        
+        .form-group textarea {
+            height: 200px; font-family: 'Consolas', monospace;
+            background: #2c3e50; color: #ecf0f1;
+        }
+        
+        .modal-footer {
+            padding: 20px; border-top: 1px solid #ecf0f1;
+            display: flex; gap: 10px; justify-content: flex-end;
+        }
+        
+        .template-count {
+            font-size: 11px; color: #7f8c8d; margin-left: auto;
+        }
+        
+        /* Template sections */
+        .template-section {
+            margin-bottom: 15px;
+        }
+        
+        .template-section.collapsed .category {
+            display: none;
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #1976d2, #1565c0);
+            color: white;
+            padding: 12px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .section-header:hover {
+            background: linear-gradient(135deg, #1565c0, #0d47a1);
+            transform: translateY(-1px);
+        }
+        
+        .siemens-section .section-header {
+            background: linear-gradient(135deg, #1976d2, #1565c0);
+        }
+        
+        .custom-section .section-header {
+            background: linear-gradient(135deg, #ff6b35, #e55a2b);
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .section-count {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .section-toggle {
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+        
+        .template-section.collapsed .section-toggle {
+            transform: rotate(-90deg);
+        }
+        
+        /* Category headers within sections */
+        .category-header {
+            background: #f5f5f5;
+            padding: 8px 12px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #424242;
+            border-left: 3px solid #1976d2;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .category-count {
+            font-size: 11px;
+            color: #666;
+            font-weight: normal;
+        }
+        
+        /* Template badges */
+        .template-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .template-badge.custom {
+            background: #ff6b35;
+            color: white;
+        }
+        
+        .template-badge.official {
+            background: #1976d2;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Unified JS Pro</h1>
+        <div class="siemens-badge">SIEMENS WinCC</div>
+        <div class="header-actions">
+            <button class="header-btn add" id="addTemplateBtn">Add Template</button>
+            <button class="header-btn" id="importBtn">Import</button>
+            <button class="header-btn" id="exportBtn">Export</button>
+            <div style="font-size: 14px; margin-left: 15px;">JavaScript Templates for HMI Programming</div>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="template-sidebar">
+            <div class="sidebar-header">
+                <input type="text" class="search-box" id="searchBox" placeholder="Search templates...">
+                <span class="template-count" id="templateCount">0 templates</span>
+            </div>
+            
+            <div id="categoriesContainer">
+                <!-- Categories will be dynamically generated here -->
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="description-area">
+                <div class="description-title" id="descriptionTitle">Select a template</div>
+                <div id="descriptionText">Choose a template from the left sidebar to view its description and code.</div>
+            </div>
+            
+            <div class="toolbar">
+                <button class="btn copy" id="copyBtn">Copy Code</button>
+                <button class="btn" id="selectAllBtn">Select All</button>
+                <button class="btn edit" id="editBtn" style="display: none;">Edit</button>
+                <button class="btn delete" id="deleteBtn" style="display: none;">Delete</button>
+                <div style="margin-left: auto; color: #7f8c8d;">Click templates to view code</div>
+            </div>
+            
+            <div class="code-container">
+                <pre class="code-highlighted"><code class="language-javascript" id="codeHighlighted"></code></pre>
+                <textarea class="code-display" id="codeDisplay" readonly 
+                    placeholder="Select a template from the left to view WinCC JavaScript code..."></textarea>
+            </div>
+        </div>
+    </div>
+    
+    <div class="status-bar">
+        <span id="statusText">Ready - Select a template to get started</span>
+        <span>Easy copy & paste for TIA Portal</span>
+    </div>
+    
+    <div class="footer">
+        Developed by Hamed Adefuwa
+    </div>
+    
+    <div class="copy-feedback" id="copyFeedback">Code copied to clipboard!</div>
+
+    <!-- Add/Edit Template Modal -->
+    <div id="templateModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Template</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="templateTitle">Template Title:</label>
+                    <input type="text" id="templateTitle" placeholder="Enter template title">
+                </div>
+                <div class="form-group">
+                    <label for="templateCategory">Category:</label>
+                    <select id="templateCategory">
+                        <option value="Custom">Custom</option>
+                        <option value="Tag Operations">Tag Operations</option>
+                        <option value="Screen Navigation">Screen Navigation</option>
+                        <option value="Alarm Management">Alarm Management</option>
+                        <option value="Recipe Management">Recipe Management</option>
+                        <option value="Utilities">Utilities</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="templateDescription">Description:</label>
+                    <input type="text" id="templateDescription" placeholder="Brief description of what this template does">
+                </div>
+                <div class="form-group">
+                    <label for="templateCode">JavaScript Code:</label>
+                    <textarea id="templateCode" placeholder="Paste your WinCC JavaScript code here..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="cancelBtn">Cancel</button>
+                <button class="btn copy" id="saveTemplateBtn">Save Template</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="templates.js"></script>
+    <script src="renderer.js"></script>
+</body>
+</html> 

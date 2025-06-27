@@ -1,0 +1,15 @@
+{
+  "name": "unified-js-pro",
+  "version": "1.0.0",
+  "description": "Unified JS Pro - A powerful Electron application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev"
+  },
+  "author": "Hamed Adefuwa",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^27.0.0"
+  }
+} 
