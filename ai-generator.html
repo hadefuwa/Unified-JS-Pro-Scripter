@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI WinCC Code Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .back-btn {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .content {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+        }
+        
+        .section h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        
+        .prompt-input {
+            height: 120px;
+        }
+        
+        .code-output {
+            height: 300px;
+            font-family: 'Consolas', monospace;
+            background: #2c3e50;
+            color: #e2e8f0;
+        }
+        
+        .generate-btn {
+            background: #9b59b6;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        .generate-btn:hover {
+            background: #8e44ad;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+        }
+        
+        .status.info { background: #d1ecf1; color: #0c5460; }
+        .status.success { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .copy-btn { background: #27ae60; color: white; }
+        .save-btn { background: #3498db; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="goBack()">← Back</button>
+            <h1>🤖 AI WinCC Code Generator</h1>
+            <p>Describe what you want to create, and AI will generate WinCC JavaScript code</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h3>📝 Describe Your Code</h3>
+                <textarea 
+                    id="promptInput" 
+                    class="prompt-input"
+                    placeholder="Example: Write a function to read temperature tags and log their values with error handling"
+                ></textarea>
+                
+                <button class="generate-btn" id="generateBtn">🧠 Generate Code</button>
+                
+                <div class="status" id="statusMessage"></div>
+            </div>
+            
+            <div class="section">
+                <h3>⚡ Generated Code</h3>
+                <textarea 
+                    id="codeOutput" 
+                    class="code-output" 
+                    readonly
+                    placeholder="Generated WinCC JavaScript will appear here..."
+                ></textarea>
+                
+                <div class="action-buttons" id="actionButtons" style="display: none;">
+                    <button class="action-btn copy-btn" id="copyBtn">📋 Copy</button>
+                    <button class="action-btn save-btn" id="saveBtn">💾 Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let aiInitialized = false;
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('AI Generator page loaded');
+            await initializeAI();
+            
+            document.getElementById('generateBtn').addEventListener('click', generateCode);
+            document.getElementById('copyBtn').addEventListener('click', copyCode);
+            document.getElementById('promptInput').focus();
+        });
+        
+        async function initializeAI() {
+            try {
+                showStatus('Initializing AI system...', 'info');
+                
+                if (!window.electronAPI || !window.electronAPI.ai) {
+                    throw new Error('AI system not available');
+                }
+                
+                const result = await window.electronAPI.ai.initialize();
+                
+                if (result.success) {
+                    aiInitialized = true;
+                    showStatus('✅ AI ready! Loaded ' + result.templatesCount + ' templates.', 'success');
+                } else {
+                    throw new Error(result.error);
+                }
+                
+            } catch (error) {
+                showStatus('❌ AI initialization failed: ' + error.message, 'error');
+                document.getElementById('generateBtn').disabled = true;
+            }
+        }
+        
+        async function generateCode() {
+            const prompt = document.getElementById('promptInput').value.trim();
+            
+            if (!prompt) {
+                showStatus('Please describe what you want to create!', 'error');
+                return;
+            }
+            
+            if (!aiInitialized) {
+                showStatus('AI system not ready', 'error');
+                return;
+            }
+            
+            const generateBtn = document.getElementById('generateBtn');
+            const codeOutput = document.getElementById('codeOutput');
+            
+            try {
+                generateBtn.disabled = true;
+                generateBtn.textContent = '🧠 Generating...';
+                showStatus('🤖 Generating code...', 'info');
+                
+                const result = await window.electronAPI.ai.generateCode(prompt);
+                
+                if (result.success) {
+                    codeOutput.value = result.code;
+                    showStatus('✅ Code generated successfully!', 'success');
+                    document.getElementById('actionButtons').style.display = 'flex';
+                } else {
+                    showStatus('❌ Generation failed: ' + result.error, 'error');
+                }
+                
+            } catch (error) {
+                showStatus('❌ Error: ' + error.message, 'error');
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = '🧠 Generate Code';
+            }
+        }
+        
+        function copyCode() {
+            const code = document.getElementById('codeOutput').value;
+            if (code) {
+                navigator.clipboard.writeText(code);
+                showStatus('✅ Code copied to clipboard!', 'success');
+            }
+        }
+        
+        function showStatus(message, type) {
+            const status = document.getElementById('statusMessage');
+            status.textContent = message;
+            status.className = 'status ' + type;
+            status.style.display = 'block';
+        }
+        
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html> 

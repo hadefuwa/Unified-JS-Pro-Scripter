@@ -6,6 +6,9 @@ const fs = require('fs');
 // Import our console logger
 const { log, logError, logWarning, logDebug } = require('./console-logger');
 
+// Import AI core functionality
+const { WinCCAIScripter } = require('./ai-core.js');
+
 // Set up direct file logging for debugging
 const logFile = path.join(__dirname, 'app-debug.log');
 fs.writeFileSync(logFile, `--- App Debug Log Started ${new Date().toISOString()} ---\n`, 'utf8');
@@ -58,6 +61,10 @@ app.commandLine.appendSwitch('--disable-renderer-backgrounding');
 
 // Keep a reference to the window object
 let mainWindow;
+
+// AI Scripter instance for main process
+let aiScripter = null;
+let aiInitialized = false;
 
 // This function creates the main application window
 function createWindow() {
@@ -238,5 +245,73 @@ ipcMain.handle('save-templates', (event, templates) => {
     } catch (error) {
         logError('Main process error saving templates:', error);
         return false;
+    }
+});
+
+// ========================================
+// AI IPC HANDLERS
+// ========================================
+
+// Initialize AI system
+ipcMain.handle('ai-initialize', async () => {
+    try {
+        if (aiInitialized) {
+            log('AI already initialized');
+            return { success: true, message: 'AI already initialized' };
+        }
+        
+        log('Initializing AI WinCC Scripter in main process...');
+        aiScripter = new WinCCAIScripter();
+        
+        const initialized = await aiScripter.initialize();
+        if (initialized) {
+            aiInitialized = true;
+            log('AI Scripter initialized successfully in main process');
+            return { success: true, message: 'AI system initialized successfully' };
+        } else {
+            throw new Error('Failed to initialize AI system');
+        }
+    } catch (error) {
+        logError('Failed to initialize AI in main process:', error);
+        return { success: false, error: error.message };
+    }
+});
+
+// Generate code using AI
+ipcMain.handle('ai-generate-code', async (event, prompt) => {
+    try {
+        if (!aiInitialized || !aiScripter) {
+            throw new Error('AI system not initialized. Call ai-initialize first.');
+        }
+        
+        log(`Generating code for prompt: "${prompt}"`);
+        const result = await aiScripter.generateCode(prompt);
+        
+        if (result.success) {
+            log('AI code generation successful');
+        } else {
+            logError('AI code generation failed:', result.error);
+        }
+        
+        return result;
+    } catch (error) {
+        logError('AI code generation error in main process:', error);
+        return { success: false, error: error.message };
+    }
+});
+
+// Get AI system status
+ipcMain.handle('ai-get-status', async () => {
+    try {
+        if (!aiScripter) {
+            return { initialized: false, message: 'AI system not created' };
+        }
+        
+        const status = aiScripter.getStatus();
+        status.mainProcessInitialized = aiInitialized;
+        return status;
+    } catch (error) {
+        logError('Error getting AI status in main process:', error);
+        return { initialized: false, error: error.message };
     }
 }); 

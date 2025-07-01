@@ -68,6 +68,46 @@ contextBridge.exposeInMainWorld('electronAPI', {
             logError('Error saving templates via IPC:', error);
             return false;
         }
+    },
+    
+    // AI Code Generation functions
+    ai: {
+        // Initialize AI system
+        initialize: async () => {
+            try {
+                log('Initializing AI system via main process...');
+                const result = await ipcRenderer.invoke('ai-initialize');
+                log('AI initialization result:', result);
+                return result;
+            } catch (error) {
+                logError('Error initializing AI via IPC:', error);
+                return { success: false, error: error.message };
+            }
+        },
+        
+        // Generate code using AI
+        generateCode: async (prompt) => {
+            try {
+                log('Requesting code generation from AI...');
+                const result = await ipcRenderer.invoke('ai-generate-code', prompt);
+                log('AI code generation completed');
+                return result;
+            } catch (error) {
+                logError('Error generating code via IPC:', error);
+                return { success: false, error: error.message };
+            }
+        },
+        
+        // Get AI system status
+        getStatus: async () => {
+            try {
+                const status = await ipcRenderer.invoke('ai-get-status');
+                return status;
+            } catch (error) {
+                logError('Error getting AI status via IPC:', error);
+                return { initialized: false, error: error.message };
+            }
+        }
     }
 });
 

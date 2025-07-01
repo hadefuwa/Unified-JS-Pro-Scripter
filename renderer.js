@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchBox = document.getElementById('searchBox');
     
     // Header buttons
+    const aiGenerateBtn = document.getElementById('aiGenerateBtn');
     const addTemplateBtn = document.getElementById('addTemplateBtn');
     const importBtn = document.getElementById('importBtn');
     const exportBtn = document.getElementById('exportBtn');
@@ -48,6 +49,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const cancelAdminBtn = document.getElementById('cancelAdminBtn');
     const saveAdminBtn = document.getElementById('saveAdminBtn');
     
+    // AI modal elements - removed (now uses separate page)
+    
     let currentTemplate = null;
     let editingTemplate = null;
     let searchTerm = '';
@@ -57,6 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
         maxTemplates: 50,
         customCategories: []
     };
+    
+    // AI system state - removed (now handled in separate page)
     
     rendererLogger.log('Unified JS Pro - Enhanced Template Browser loaded');
     
@@ -81,6 +86,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         setupEventListeners();
+        
+        // AI system debug - removed (now uses separate page)
     }
     
     function setupEventListeners() {
@@ -91,6 +98,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Header buttons
+        aiGenerateBtn.addEventListener('click', function() {
+            window.location.href = 'ai-generator.html';
+        });
         addTemplateBtn.addEventListener('click', openAddTemplateModal);
         importBtn.addEventListener('click', importTemplates);
         exportBtn.addEventListener('click', exportTemplates);
@@ -112,6 +122,8 @@ document.addEventListener('DOMContentLoaded', function() {
         cancelAdminBtn.addEventListener('click', closeAdminModalFunc);
         saveAdminBtn.addEventListener('click', saveAdminSettings);
         
+        // AI modal events - removed (now uses separate page)
+        
         // Close modal when clicking outside
         templateModal.addEventListener('click', function(e) {
             if (e.target === templateModal) {
@@ -124,6 +136,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeAdminModalFunc();
             }
         });
+        
+        // AI modal click-outside handler - removed (now uses separate page)
         
         // Admin tab switching
         document.querySelectorAll('.admin-tab-btn').forEach(btn => {
@@ -1073,5 +1087,9 @@ document.addEventListener('DOMContentLoaded', function() {
     window.saveCategoryName = saveCategoryName;
     window.deleteCategory = deleteCategory;
     
-    rendererLogger.log('Enhanced Template Browser Ready! You can now add custom templates.');
+    // ========================================
+    // AI CODE GENERATION - Now handled by separate page (ai-generator.html)
+    // ========================================
+    
+    rendererLogger.log('Enhanced Template Browser ready! AI functionality moved to ai-generator.html');
 }); 
