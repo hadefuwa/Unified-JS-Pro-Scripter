@@ -293,7 +293,7 @@ const axios = require('axios');
 
 async function testLMStudio() {
     const response = await axios.post('http://localhost:1234/v1/chat/completions', {
-        model: 'deepseek-quant-4bit',
+        model: 'deepseek-r1-0528-qwen3-8b',  // Your specific DeepSeek model
         messages: [{ role: 'user', content: 'Write WinCC JS to read a tag called Temperature' }],
         max_tokens: 200
     });
@@ -490,9 +490,9 @@ Unified-JS-Pro-Scripter/
 ## ⚙️ **LM Studio Configuration**
 
 ### **Recommended Models**
-1. **CodeLlama-7B-Instruct** - Good for code generation, runs locally
-2. **Mistral-7B-Instruct** - Great general reasoning
-3. **Zephyr-7B-Beta** - Excellent instruction following
+1. **DeepSeek R1 0528 Qwen3 8B** ⭐ - Excellent for code generation, optimized reasoning
+2. **DeepSeek Coder 6.7B** - Specialized for programming tasks
+3. **DeepSeek Chat V2** - Great for instruction following and code explanation
 
 ### **LM Studio Setup**
 ```javascript
@@ -501,7 +501,7 @@ const AI_CONFIG = {
   lmStudio: {
     host: 'localhost',
     port: 1234,
-    model: 'codellama-7b-instruct',
+    model: 'deepseek-r1-0528-qwen3-8b',  // DeepSeek R1 model
     maxTokens: 1000,
     temperature: 0.1,  // Low temperature for consistent code
     stopSequences: ['```', 'Human:', 'User:']
@@ -513,6 +513,13 @@ const AI_CONFIG = {
   }
 };
 ```
+
+### **Why DeepSeek R1 is Perfect for This Project**
+- ✅ **Reasoning Chain** - R1 shows step-by-step thinking process
+- ✅ **Code Quality** - Excellent at generating clean, maintainable code
+- ✅ **Context Awareness** - Better at following complex instructions
+- ✅ **Error Handling** - Naturally includes proper try-catch blocks
+- ✅ **WinCC Compatibility** - Handles industrial automation patterns well
 
 ---
 
