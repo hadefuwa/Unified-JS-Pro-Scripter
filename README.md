@@ -1,223 +1,227 @@
-# Unified JS Pro
+# 🚀 **Unified JS Pro Scripter**
 
-**A Complete Professional Siemens WinCC Unified JavaScript Reference Tool**
+> **AI-Powered WinCC Unified JavaScript Code Generator**
 
-[![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](http://unlicense.org/)
-[![Version](https://img.shields.io/badge/version-1.2.0-brightgreen.svg)]()
-[![Electron](https://img.shields.io/badge/Electron-Latest-47848F.svg)](https://electronjs.org/)
-[![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![WinCC](https://img.shields.io/badge/WinCC-Unified-blue.svg)]()
+Transform your WinCC Unified development with AI-powered code generation that stays strictly within Siemens patterns and best practices.
 
-## 🚀 Overview
-
-Unified JS Pro is the **most comprehensive** desktop application for Siemens WinCC Unified JavaScript development. Built from official Siemens documentation, it provides a complete reference library of **54 professional templates** covering everything from basic JavaScript operations to advanced industrial HMI functions.
-
-**Perfect for both beginners learning WinCC JavaScript and experienced developers needing quick access to industrial-grade code examples.**
-
-![Unified JS Pro Screenshot](https://via.placeholder.com/800x500/1976d2/ffffff?text=Unified+JS+Pro+Screenshot)
-
-## ✨ Features
-
-### 🎯 **Complete Template Library**
-- **54 Professional Templates** - Complete WinCC Unified JavaScript reference
-- **16 Categories** - From basic operations to advanced industrial functions
-- **Siemens Documentation Based** - All templates extracted from official documentation
-- **Production Ready** - Real-world examples with error handling
-- **Beginner Friendly** - Simple, readable code with detailed comments
-
-### 💼 **Industrial-Grade Features**
-- **File System Operations** - Production logging, configuration management
-- **Timer Functions** - Delays, periodic operations, alarm blinking
-- **Alarm Management** - Advanced filtering and subscription handling
-- **Language Management** - Multi-language runtime switching
-- **Screen Management** - Advanced popup control and object manipulation
-- **Data Storage** - Session and screen-level DataSet management
-
-### 🔧 **Professional Development Tools**
-- **Smart Organization** - User templates prioritized, official templates categorized
-- **Syntax Highlighting** - Beautiful JavaScript code highlighting with Prism.js
-- **Template Management** - Create, edit, delete, and organize custom templates
-- **Search & Filter** - Powerful search across templates, descriptions, and code
-- **Import/Export** - Share template collections via JSON files
-- **Copy & Paste Ready** - One-click code copying for TIA Portal
-
-### 🎨 **User Experience**
-- **Modern UI** - Professional Siemens-style interface
-- **Dark Theme** - Easy-on-eyes code display
-- **Responsive Design** - Optimized for various screen sizes
-- **Real-time Feedback** - Template count and status updates
-- **Keyboard Shortcuts** - Efficient navigation and operations
-
-## 🛠️ Tech Stack
-
-- **Electron.js** - Cross-platform desktop application framework
-- **Node.js** - JavaScript runtime environment
-- **HTML5/CSS3** - Modern web technologies
-- **Vanilla JavaScript** - ES6+ features with beginner-friendly patterns
-- **Prism.js** - Professional syntax highlighting
-- **localStorage** - Client-side data persistence
-
-## 📦 Installation
-
-### Prerequisites
-- Node.js >= 14.0.0
-- npm >= 6.0.0
-
-### Quick Start
-```bash
-# Clone the repository
-git clone https://github.com/hadefuwa/Unified-JS-Pro.git
-
-# Navigate to project directory
-cd Unified-JS-Pro
-
-# Install dependencies
-npm install
-
-# Start the application
-npm start
-```
-
-## 🎯 Complete Template Categories
-
-### **🔧 Core JavaScript Operations**
-- **Array Operations** (6 templates) - Sorting, filtering, transformations
-- **String Operations** (5 templates) - Concatenation, searching, formatting
-- **Mathematical Operations** (3 templates) - Calculations, number formatting
-- **Date & Time Operations** (4 templates) - Timestamps, formatting, calculations
-- **Data Type Conversion** (3 templates) - Type conversions, validations
-- **Loop Operations** (3 templates) - For loops, while loops, break/continue
-- **Conditional Logic** (3 templates) - If-else chains, switch statements
-- **Error Handling** (3 templates) - Try-catch blocks, error logging
-- **Object Operations** (3 templates) - Object creation, property handling
-
-### **🏭 Industrial WinCC Functions**
-- **Screen Object Manipulation** (6 templates) - FindItem, color changes, visibility
-- **File System Operations** (4 templates) - CreateDirectory, WriteFile, ReadFile, AppendFile
-- **Timer Functions** (2 templates) - SetInterval, SetTimeout for delays and periodic tasks
-- **Alarm Management** (1 template) - Advanced alarm subscription and filtering
-- **Language Operations** (1 template) - Multi-language runtime switching
-- **Screen Management** (2 templates) - Advanced popup control and screen analysis
-- **Data Storage** (1 template) - Session and screen DataSet management
-
-### **📚 Documentation Integration**
-- **Official Siemens Documentation** - Converted PDF manuals included
-- **Real-world Examples** - Production scenarios and industrial use cases
-- **Best Practices** - Following Siemens coding standards and guidelines
-
-## 🚀 Usage
-
-1. **Browse Templates** - Explore 54 comprehensive templates across 16 categories
-2. **Search & Filter** - Find specific WinCC functions quickly
-3. **View Code** - See syntax-highlighted, production-ready JavaScript
-4. **Copy Code** - One-click copying to clipboard for TIA Portal
-5. **Create Custom** - Add your own project-specific templates
-6. **Import/Export** - Share templates with development teams
-
-## 📁 Project Structure
-
-```
-Unified-JS-Pro/
-├── main.js                    # Electron main process
-├── index.html                 # Application UI
-├── renderer.js                # UI logic and interactions
-├── templates.js               # Template management system
-├── templates.json             # Complete template database (54 templates)
-├── preload.js                 # Security preload script
-├── package.json               # Dependencies and scripts
-├── assets/                    # Application assets
-│   └── favicon2.png          # Application icon
-├── 109758536_Unified_JS_Styleguide_V10_en.txt    # Siemens documentation
-├── 109758536_Unified_TipsScripting_V30_en.txt    # Siemens documentation
-├── TECHNICAL_DOCUMENTATION.md # Developer documentation
-├── FUTURE_ROADMAP.md         # Enhancement roadmap
-└── README.md                 # This file
-```
-
-## 🔧 Development
-
-### Development Mode
-```bash
-npm start
-```
-
-### Adding New Templates
-Templates are managed through the comprehensive JSON database. You can:
-- Add templates through the UI
-- Import template collections from Siemens documentation
-- Modify the complete template library
-
-### Customization
-- **Themes**: Modify CSS for different visual styles
-- **Templates**: Extend the 54-template collection
-- **Features**: Add new WinCC-specific functionality
-
-## 📚 Documentation
-
-- **[Technical Documentation](TECHNICAL_DOCUMENTATION.md)** - Complete developer guide
-- **[Future Roadmap](FUTURE_ROADMAP.md)** - Planned enhancements and features
-- **Included Siemens Documentation** - Official PDF manuals converted to text
-
-## 🤝 Contributing
-
-We welcome contributions! Please feel free to:
-- Submit WinCC-specific templates
-- Report bugs or suggest industrial features
-- Add new Siemens function examples
-- Improve documentation
-- Submit pull requests
-
-## 🎯 Industrial Use Cases
-
-- **Professional HMI Development** - Complete WinCC Unified JavaScript reference
-- **Industrial Automation** - Production-ready code templates
-- **Team Collaboration** - Share templates across engineering teams
-- **Training & Education** - Comprehensive learning resource for WinCC development
-- **Code Standardization** - Consistent industrial coding patterns
-- **Rapid Prototyping** - Quick access to complex WinCC functions
-- **Production Systems** - Tested templates for real-world applications
-
-## 🔒 Security
-
-- Context isolation enabled
-- Node integration disabled in renderer
-- Secure preload script implementation
-- Protected template database
-- Input validation and sanitization
-
-## 📈 Performance
-
-- Efficient handling of 54+ templates
-- Optimized rendering for large template collections
-- Memory-conscious industrial application design
-- Fast search across comprehensive template database
-- Minimal startup time for production environments
-
-## 🌟 What's New in Version 1.2.0
-
-- **🎯 11 New WinCC Templates** - Critical industrial functions added
-- **📈 Template Count**: 43 → 54 templates (+25% increase)
-- **🏭 6 New Categories**: File System, Timers, Alarms, Language, Screen Management, Data Storage
-- **📚 Siemens Documentation**: Official PDF manuals converted and integrated
-- **💼 Industrial Focus**: Production-ready examples with real-world scenarios
-- **🔧 Complete Reference**: Now covers all essential WinCC JavaScript functions
-
-## 📄 License
-
-This project is released into the public domain under the [Unlicense](LICENSE).
-
-## 👨‍💻 Author
-
-**Hamed Adefuwa**
-- GitHub: [@hadefuwa](https://github.com/hadefuwa)
-
-## 🙏 Acknowledgments
-
-- Siemens for WinCC Unified platform and official documentation
-- Industrial automation community
-- Electron.js and Prism.js communities
-- Open source contributors
+[![Version](https://img.shields.io/badge/version-2.0.0--dev-blue.svg)](https://github.com/hadefuwa/Unified-JS-Pro-Scripter)
+[![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)](https://github.com/hadefuwa/Unified-JS-Pro-Scripter)
+[![License](https://img.shields.io/badge/license-Unlicense-green.svg)](./LICENSE)
 
 ---
 
-**The Complete WinCC Unified JavaScript Reference - Made with ❤️ for Industrial Developers** 
+## 🎯 **What is This?**
+
+**Unified JS Pro Scripter** is an AI-powered desktop application that generates WinCC Unified JavaScript code based on your natural language requests. It uses **local AI models** via LM Studio to ensure your code stays private and follows Siemens best practices.
+
+### **Key Features**
+- 🤖 **AI Code Generation** - Natural language to WinCC JavaScript
+- 🔒 **Fully Local** - No internet required, your code stays private
+- 📚 **Siemens-Compliant** - Only generates code following WinCC patterns
+- ⚡ **Lightweight RAG** - Instant responses using JSON embeddings
+- 🎨 **Professional UI** - Built with Electron.js for desktop experience
+
+---
+
+## 🔄 **Evolution: From Template Browser to AI Scripter**
+
+### **Version 1.0** - Template Browser
+- ✅ 54 pre-built WinCC JavaScript templates
+- ✅ Search, filter, and browse functionality
+- ✅ Template management (add, edit, delete)
+- ✅ Professional Electron.js application
+
+### **Version 2.0** - AI Scripter (Current Development)
+- 🚀 **AI-powered code generation** using local LLMs
+- 🚀 **Natural language prompts** → WinCC JavaScript
+- 🚀 **RAG implementation** with existing templates as knowledge base
+- 🚀 **Maintains all existing features** while adding AI capabilities
+
+---
+
+## 🛠️ **How It Works**
+
+### **1. AI Architecture**
+```
+User Prompt → Embedding → Similarity Search → Context + Prompt → LM Studio → WinCC Code
+```
+
+### **2. Example Workflow**
+```
+Input:  "Write code to read a temperature tag and log it"
+AI:     Finds relevant templates from 54 examples
+Output: Professional WinCC JavaScript with error handling
+```
+
+### **3. Strict Boundaries**
+- ✅ **Only WinCC functions** - No web JavaScript
+- ✅ **Siemens patterns** - Based on official examples
+- ✅ **Error handling** - Always includes try-catch blocks
+- ✅ **Logging** - Uses HMIRuntime.Trace() consistently
+
+---
+
+## 🚀 **Quick Start**
+
+### **Prerequisites**
+1. **Windows 10/11** (Electron.js desktop app)
+2. **LM Studio** installed and running
+3. **Local LLM model** (Recommended: DeepSeek Coder 6.7B)
+
+### **Installation**
+```bash
+# Clone the repository
+git clone https://github.com/hadefuwa/Unified-JS-Pro-Scripter.git
+cd Unified-JS-Pro-Scripter
+
+# Install dependencies (minimal - only 2 packages!)
+npm install
+
+# Run the application
+npm start
+```
+
+### **Setup LM Studio**
+1. Download and install [LM Studio](https://lmstudio.ai/)
+2. Load a code-generation model (DeepSeek Coder recommended)
+3. Start the local server at `http://localhost:1234`
+4. Open Unified JS Pro Scripter and start generating code!
+
+---
+
+## 📊 **Technical Implementation**
+
+### **Simplified RAG Architecture**
+```javascript
+// embeddings.json - All knowledge in one lightweight file
+{
+  "templates": [
+    {
+      "id": "tag-read-basic",
+      "title": "Read Tag Value",
+      "code": "// WinCC JavaScript code...",
+      "description": "Safely reads values from WinCC tags"
+    }
+  ],
+  "embeddings": [
+    [0.1, 0.2, 0.3, ...], // Pre-computed vector
+    // ... 54 total embeddings
+  ]
+}
+```
+
+### **Why This Approach?**
+- ✅ **No Vector Database** - Simple JSON file (~50KB)
+- ✅ **In-Memory Search** - Lightning fast similarity calculation
+- ✅ **Zero Dependencies** - Just Axios for API calls
+- ✅ **Easy to Debug** - Inspect embeddings directly
+- ✅ **Beginner-Friendly** - One file contains all AI logic
+
+---
+
+## 🎯 **Development Status**
+
+### **Current Phase: Foundation & Planning**
+- ✅ Project architecture designed
+- ✅ Repository setup complete
+- ✅ Development plan finalized
+- 🔄 **Next**: LM Studio integration testing
+
+### **Roadmap**
+| Phase | Description | Timeline |
+|-------|-------------|----------|
+| **Phase 1** | LM Studio Connection & Testing | Day 1-2 |
+| **Phase 2** | Simple RAG Implementation | Day 3-5 |
+| **Phase 3** | Electron UI Integration | Day 6-7 |
+| **Phase 4** | Polish & Testing | Day 8-10 |
+| **Phase 5** | Release Preparation | Day 11-14 |
+
+**🎯 Target Release: 2 weeks from start**
+
+---
+
+## 🔧 **For Developers**
+
+### **Project Structure**
+```
+Unified-JS-Pro-Scripter/
+├── ai-core.js                 # All AI logic (one file!)
+├── embeddings.json            # Pre-computed embeddings
+├── embedding-generator.js     # Generate embeddings script
+├── templates/                 # Original template system
+├── main.js                    # Electron main process
+├── renderer.js                # UI logic + AI integration
+└── index.html                 # Application interface
+```
+
+### **Key Technologies**
+- **Electron.js** - Desktop application framework
+- **LM Studio** - Local LLM serving
+- **JSON Embeddings** - Lightweight vector storage
+- **Vanilla JavaScript** - Beginner-friendly, no frameworks
+
+---
+
+## 📚 **Why WinCC Developers Need This**
+
+### **Current Pain Points**
+- ❌ **Repetitive coding** - Same patterns over and over
+- ❌ **Documentation hunting** - Searching for syntax examples
+- ❌ **Boilerplate overhead** - Error handling, logging setup
+- ❌ **Learning curve** - WinCC-specific JavaScript patterns
+
+### **How This Helps**
+- ✅ **Instant code generation** - Natural language to code
+- ✅ **Consistent patterns** - Always follows Siemens best practices
+- ✅ **Built-in error handling** - Professional code every time
+- ✅ **Local and private** - Your code never leaves your machine
+
+---
+
+## 🤝 **Contributing**
+
+This project is open-source and welcomes contributions! Whether you're a WinCC expert or AI enthusiast:
+
+1. **Fork the repository**
+2. **Create a feature branch**
+3. **Add your improvements**
+4. **Submit a pull request**
+
+### **Areas for Contribution**
+- 🔍 **More WinCC templates** - Expand the knowledge base
+- 🎨 **UI improvements** - Better user experience
+- 🧠 **Prompt engineering** - Better AI responses
+- 📚 **Documentation** - Setup guides and tutorials
+
+---
+
+## 📞 **Support & Community**
+
+- **Issues**: [GitHub Issues](https://github.com/hadefuwa/Unified-JS-Pro-Scripter/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/hadefuwa/Unified-JS-Pro-Scripter/discussions)
+- **Original Project**: [Unified JS Pro](https://github.com/hadefuwa/Unified-JS-Pro)
+
+---
+
+## 📄 **License**
+
+This project is released under the **Unlicense** - meaning it's in the public domain. Use it, modify it, distribute it freely!
+
+---
+
+## 🙏 **Acknowledgments**
+
+- **Siemens** - For WinCC Unified platform
+- **LM Studio** - For local LLM serving
+- **Original Templates** - Based on official Siemens documentation
+- **Open Source Community** - For the tools that make this possible
+
+---
+
+<div align="center">
+
+**⭐ Star this repository if you find it useful!**
+
+Made with ❤️ for the industrial automation community
+
+</div> 
