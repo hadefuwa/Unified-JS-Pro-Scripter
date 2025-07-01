@@ -28,7 +28,7 @@ class WinCCAIScripter {
     // Initialize the system - load embeddings
     async initialize() {
         try {
-            console.log('🚀 Initializing WinCC AI Scripter...');
+            console.log('Initializing WinCC AI Scripter...');
             
             // Load embeddings
             const embeddingsPath = path.join(__dirname, 'embeddings.json');
@@ -37,14 +37,14 @@ class WinCCAIScripter {
             }
             
             this.embeddings = JSON.parse(fs.readFileSync(embeddingsPath, 'utf-8'));
-            console.log(`✅ Loaded ${this.embeddings.templates.length} WinCC templates`);
-            console.log(`📐 Embedding dimensions: ${this.embeddings.metadata.dimensions}`);
+            console.log(`Loaded ${this.embeddings.templates.length} WinCC templates`);
+            console.log(`Embedding dimensions: ${this.embeddings.metadata.dimensions}`);
             
             this.isInitialized = true;
             return true;
             
         } catch (error) {
-            console.error('❌ Failed to initialize AI Scripter:', error.message);
+            console.error('Failed to initialize AI Scripter:', error.message);
             return false;
         }
     }
@@ -134,7 +134,7 @@ class WinCCAIScripter {
             throw new Error('AI Scripter not initialized. Call initialize() first.');
         }
         
-        console.log(`🔍 Searching for templates similar to: "${query}"`);
+        console.log(`Searching for templates similar to: "${query}"`);
         
         // Create embedding for user query
         const queryEmbedding = this.createQueryEmbedding(query);
@@ -152,7 +152,7 @@ class WinCCAIScripter {
             .sort((a, b) => b.similarity - a.similarity)
             .slice(0, this.config.rag.maxRetrievedTemplates);
         
-        console.log('📊 Found similar templates:');
+        console.log('Found similar templates:');
         topMatches.forEach((match, i) => {
             console.log(`   ${i + 1}. ${match.template.title} (${match.template.category}) - ${(match.similarity * 100).toFixed(1)}%`);
         });
@@ -186,13 +186,13 @@ class WinCCAIScripter {
                 throw new Error('AI Scripter not initialized. Call initialize() first.');
             }
             
-            console.log('🤖 Generating WinCC JavaScript code...');
+            console.log('Generating WinCC JavaScript code...');
             
             // Find similar templates using RAG
             const similarTemplates = this.findSimilarTemplates(userPrompt);
             
             if (similarTemplates.length === 0) {
-                console.log('⚠️  No similar templates found. Generating from base knowledge...');
+                console.log('No similar templates found. Generating from base knowledge...');
             }
             
             // Build context from similar templates
@@ -238,16 +238,23 @@ Generate only the JavaScript function code. No explanations, no markdown, just t
             );
             
             if (response.data && response.data.choices && response.data.choices[0]) {
-                const generatedCode = response.data.choices[0].message.content;
+                let generatedCode = response.data.choices[0].message.content;
+                
+                // Clean up markdown formatting (remove ```javascript and ``` wrappers)
+                generatedCode = generatedCode.replace(/^```javascript\s*\n?/i, '');
+                generatedCode = generatedCode.replace(/^```js\s*\n?/i, '');
+                generatedCode = generatedCode.replace(/^```\s*\n?/, '');
+                generatedCode = generatedCode.replace(/\n?```\s*$/g, '');
+                generatedCode = generatedCode.trim();
                 
                 // Validate the generated code
                 const validation = this.validateWinCCCode(generatedCode);
                 
-                console.log('✅ Code generated successfully!');
-                console.log('🔍 Code validation:');
-                console.log(`   HMIRuntime.Trace used: ${validation.hasHMITrace ? '✅' : '❌'}`);
-                console.log(`   Try-catch blocks: ${validation.hasTryCatch ? '✅' : '❌'}`);
-                console.log(`   No web APIs: ${validation.noWebAPIs ? '✅' : '❌'}`);
+                console.log('Code generated successfully!');
+                console.log('Code validation:');
+                console.log(`   HMIRuntime.Trace used: ${validation.hasHMITrace ? 'Yes' : 'No'}`);
+                console.log(`   Try-catch blocks: ${validation.hasTryCatch ? 'Yes' : 'No'}`);
+                console.log(`   No web APIs: ${validation.noWebAPIs ? 'Yes' : 'No'}`);
                 
                 return {
                     success: true,
@@ -262,10 +269,10 @@ Generate only the JavaScript function code. No explanations, no markdown, just t
             }
             
         } catch (error) {
-            console.error('❌ Error generating code:', error.message);
+            console.error('Error generating code:', error.message);
             
             if (error.code === 'ECONNREFUSED') {
-                console.error('🔧 Make sure LM Studio server is running on ' + this.config.lmStudio.host + ':' + this.config.lmStudio.port);
+                console.error('Make sure LM Studio server is running on ' + this.config.lmStudio.host + ':' + this.config.lmStudio.port);
             }
             
             return {
@@ -302,15 +309,15 @@ Generate only the JavaScript function code. No explanations, no markdown, just t
 
 // Test function for standalone usage
 async function testAIScripter() {
-    console.log('🧪 Testing WinCC AI Scripter...');
-    console.log('═'.repeat(50));
+    console.log('Testing WinCC AI Scripter...');
+    console.log('='.repeat(50));
     
     const ai = new WinCCAIScripter();
     
     // Initialize
     const initialized = await ai.initialize();
     if (!initialized) {
-        console.log('❌ Failed to initialize AI Scripter');
+        console.log('Failed to initialize AI Scripter');
         return;
     }
     
@@ -322,25 +329,25 @@ async function testAIScripter() {
     ];
     
     for (const query of testQueries) {
-        console.log(`\n🔍 Testing query: "${query}"`);
-        console.log('─'.repeat(50));
+        console.log(`\nTesting query: "${query}"`);
+        console.log('-'.repeat(50));
         
         const result = await ai.generateCode(query);
         
         if (result.success) {
-            console.log('📝 Generated code:');
-            console.log('─'.repeat(30));
+            console.log('Generated code:');
+            console.log('-'.repeat(30));
             console.log(result.code);
-            console.log('─'.repeat(30));
+            console.log('-'.repeat(30));
         } else {
-            console.log('❌ Failed:', result.error);
+            console.log('Failed:', result.error);
         }
         
         // Wait a bit between requests
         await new Promise(resolve => setTimeout(resolve, 1000));
     }
     
-    console.log('\n🎉 AI Scripter testing complete!');
+    console.log('\nAI Scripter testing complete!');
 }
 
 // Export for use in other modules

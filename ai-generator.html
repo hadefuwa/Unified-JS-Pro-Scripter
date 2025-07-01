@@ -5,42 +5,121 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI WinCC Code Generator</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --accent: #667eea;
+            --border: #e2e8f0;
+            --shadow: rgba(0, 0, 0, 0.05);
+            --hover: rgba(102, 126, 234, 0.1);
+        }
+        
+        [data-theme="dark"] {
+            --bg-primary: #1a202c;
+            --bg-secondary: #2d3748;
+            --bg-tertiary: #4a5568;
+            --text-primary: #f7fafc;
+            --text-secondary: #a0aec0;
+            --accent: #667eea;
+            --border: #4a5568;
+            --shadow: rgba(0, 0, 0, 0.2);
+            --hover: rgba(102, 126, 234, 0.2);
+        }
+        
+        * {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px 20px 0;
             min-height: 100vh;
+            transition: background 0.2s ease, color 0.2s ease;
+            display: flex;
+            flex-direction: column;
         }
         
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            background: var(--bg-primary);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px var(--shadow);
             overflow: hidden;
+            border: 1px solid var(--border);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
         
         .header {
-            background: linear-gradient(135deg, #9b59b6, #8e44ad);
-            color: white;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
             padding: 20px;
-            text-align: center;
-            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
         
         .back-btn {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
             cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-btn:hover {
+            background: var(--hover);
+            border-color: var(--accent);
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .header p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .theme-toggle:hover {
+            background: var(--hover);
+            border-color: var(--accent);
         }
         
         .content {
@@ -51,23 +130,34 @@
         }
         
         .section {
-            background: #f8f9fa;
-            padding: 25px;
+            background: var(--bg-secondary);
+            padding: 24px;
             border-radius: 8px;
+            border: 1px solid var(--border);
         }
         
         .section h3 {
-            margin-bottom: 20px;
-            color: #2c3e50;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 600;
         }
         
         textarea {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #e1e8ed;
-            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
             font-family: inherit;
             resize: vertical;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: border-color 0.2s ease;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
         }
         
         .prompt-input {
@@ -76,81 +166,283 @@
         
         .code-output {
             height: 300px;
-            font-family: 'Consolas', monospace;
-            background: #2c3e50;
-            color: #e2e8f0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background: var(--bg-secondary);
+            font-size: 13px;
         }
         
         .generate-btn {
-            background: #9b59b6;
+            background: var(--accent);
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
             cursor: pointer;
             width: 100%;
             margin: 20px 0;
+            font-weight: 600;
+            transition: opacity 0.2s ease;
         }
         
         .generate-btn:hover {
-            background: #8e44ad;
+            opacity: 0.9;
+        }
+        
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
         
         .status {
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 16px 0;
             display: none;
+            font-weight: 500;
+            border: 1px solid transparent;
         }
         
-        .status.info { background: #d1ecf1; color: #0c5460; }
-        .status.success { background: #d4edda; color: #155724; }
-        .status.error { background: #f8d7da; color: #721c24; }
+        .status.info {
+            background: var(--bg-tertiary);
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+        
+        .status.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border-color: #10b981;
+        }
+        
+        .status.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border-color: #ef4444;
+        }
         
         .action-buttons {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             margin-top: 20px;
         }
         
         .action-btn {
             flex: 1;
-            padding: 12px;
+            padding: 10px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            transition: opacity 0.2s ease;
+        }
+        
+        .copy-btn {
+            background: #10b981;
+            color: white;
+        }
+        
+        .save-btn {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .action-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .footer {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            padding: 12px 16px;
+            font-size: 12px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+            min-height: 44px;
+            margin: 20px -20px 0;
+        }
+        
+        .footer-link {
+            color: var(--accent);
+            text-decoration: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .footer-link:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .about-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.2s ease;
+        }
+        
+        .about-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background: var(--bg-primary);
+            margin: 5% auto;
+            padding: 0;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px var(--shadow);
+            border: 1px solid var(--border);
+        }
+        
+        .modal-header {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: 16px;
             font-weight: 600;
         }
         
-        .copy-btn { background: #27ae60; color: white; }
-        .save-btn { background: #3498db; color: white; }
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+        }
+        
+        .close-btn:hover {
+            color: var(--text-primary);
+        }
+        
+        .modal-body {
+            padding: 16px;
+        }
+        
+        .modal-footer {
+            padding: 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+        
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: opacity 0.2s ease;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px 10px 0;
+            }
+            
+            .content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+            
+            .back-btn {
+                align-self: flex-start;
+            }
+            
+            .footer {
+                margin: 20px -10px 0;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <button class="back-btn" onclick="goBack()">← Back</button>
-            <h1>🤖 AI WinCC Code Generator</h1>
-            <p>Describe what you want to create, and AI will generate WinCC JavaScript code</p>
+            <div class="header-left">
+                <button class="back-btn" onclick="goBack()">← Back</button>
+                <div>
+                    <h1>AI WinCC Code Generator</h1>
+                    <p>Describe what you want to create, and AI will generate WinCC JavaScript code</p>
+                </div>
+            </div>
+            <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                <span id="themeIcon">🌙</span>
+            </button>
         </div>
         
         <div class="content">
             <div class="section">
-                <h3>📝 Describe Your Code</h3>
+                <h3>Describe Your Code</h3>
                 <textarea 
                     id="promptInput" 
                     class="prompt-input"
                     placeholder="Example: Write a function to read temperature tags and log their values with error handling"
                 ></textarea>
                 
-                <button class="generate-btn" id="generateBtn">🧠 Generate Code</button>
+                <button class="generate-btn" id="generateBtn">Generate Code</button>
                 
                 <div class="status" id="statusMessage"></div>
             </div>
             
             <div class="section">
-                <h3>⚡ Generated Code</h3>
+                <h3>Generated Code</h3>
                 <textarea 
                     id="codeOutput" 
                     class="code-output" 
@@ -159,9 +451,78 @@
                 ></textarea>
                 
                 <div class="action-buttons" id="actionButtons" style="display: none;">
-                    <button class="action-btn copy-btn" id="copyBtn">📋 Copy</button>
-                    <button class="action-btn save-btn" id="saveBtn">💾 Save</button>
+                    <button class="action-btn copy-btn" id="copyBtn">Copy</button>
+                    <button class="action-btn save-btn" id="saveBtn">Save</button>
                 </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <span>Developed by Hamed Adefuwa</span>
+        <a href="https://www.youtube.com/c/HamedAdefuwa" target="_blank" class="footer-link" title="Visit Hamed's YouTube Channel">
+            📺 YouTube Channel
+        </a>
+        <button class="about-btn" id="aboutBtn">About</button>
+    </div>
+    
+    <!-- About Modal -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>About Unified JS Pro</h2>
+                <button class="close-btn" id="closeAboutModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h3 style="color: var(--accent); margin-bottom: 8px;">WinCC JavaScript Template Generator</h3>
+                    <p style="color: var(--text-secondary); font-size: 14px;">Professional HMI Programming Made Easy</p>
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                    <h4 style="color: var(--text-primary); margin-bottom: 8px;">🚀 Features</h4>
+                    <ul style="color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin-left: 16px;">
+                        <li>70+ Professional Siemens WinCC Templates</li>
+                        <li>AI-Powered Custom Template Generation</li>
+                        <li>Dark/Light Theme Support</li>
+                        <li>Import/Export Functionality</li>
+                        <li>Category-based Organization</li>
+                        <li>Search & Filter Capabilities</li>
+                        <li>Professional Admin Panel</li>
+                    </ul>
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                    <h4 style="color: var(--text-primary); margin-bottom: 8px;">👨‍💻 Developer</h4>
+                    <div style="background: var(--bg-secondary); padding: 12px; border-radius: 6px; border-left: 3px solid var(--accent);">
+                        <p style="color: var(--text-primary); font-weight: 500; margin-bottom: 4px;">Hamed Adefuwa</p>
+                        <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 8px;">HMI/SCADA Developer & YouTube Educator</p>
+                        <a href="https://www.youtube.com/c/HamedAdefuwa" target="_blank" 
+                           style="color: var(--accent); text-decoration: none; font-size: 13px; display: inline-flex; align-items: center; gap: 4px;">
+                            📺 YouTube Channel - Industrial Automation Tutorials
+                        </a>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                    <h4 style="color: var(--text-primary); margin-bottom: 8px;">🔧 Technology Stack</h4>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <span style="background: var(--accent); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Electron.js</span>
+                        <span style="background: var(--accent); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">JavaScript</span>
+                        <span style="background: var(--accent); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Node.js</span>
+                        <span style="background: var(--accent); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">CSS3</span>
+                        <span style="background: var(--accent); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">HTML5</span>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; padding: 12px; background: var(--bg-secondary); border-radius: 6px;">
+                    <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 4px;">Version 2.1.0 • Built for Siemens TIA Portal</p>
+                    <p style="color: var(--text-muted); font-size: 12px;">© 2025 Hamed Adefuwa. Made with ❤️ for the Industrial Automation Community</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="closeAboutBtn">Close</button>
+                <a href="https://www.youtube.com/c/HamedAdefuwa" target="_blank" class="btn copy">Visit YouTube</a>
             </div>
         </div>
     </div>
@@ -171,12 +532,42 @@
         
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('AI Generator page loaded');
+            
+            // Initialize theme
+            initTheme();
+            
+            // Initialize AI
             await initializeAI();
             
+            // Setup event listeners
             document.getElementById('generateBtn').addEventListener('click', generateCode);
             document.getElementById('copyBtn').addEventListener('click', copyCode);
+            document.getElementById('aboutBtn').addEventListener('click', openAboutModal);
+            document.getElementById('closeAboutModal').addEventListener('click', closeAboutModal);
+            document.getElementById('closeAboutBtn').addEventListener('click', closeAboutModal);
             document.getElementById('promptInput').focus();
         });
+        
+        function initTheme() {
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            
+            // Load saved theme or default to light
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            setTheme(savedTheme);
+            
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                setTheme(newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+            
+            function setTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                themeIcon.textContent = theme === 'light' ? '🌙' : '☀️';
+            }
+        }
         
         async function initializeAI() {
             try {
@@ -190,13 +581,13 @@
                 
                 if (result.success) {
                     aiInitialized = true;
-                    showStatus('✅ AI ready! Loaded ' + result.templatesCount + ' templates.', 'success');
+                    showStatus('AI ready! Loaded ' + result.templatesCount + ' templates.', 'success');
                 } else {
                     throw new Error(result.error);
                 }
                 
             } catch (error) {
-                showStatus('❌ AI initialization failed: ' + error.message, 'error');
+                showStatus('AI initialization failed: ' + error.message, 'error');
                 document.getElementById('generateBtn').disabled = true;
             }
         }
@@ -219,24 +610,24 @@
             
             try {
                 generateBtn.disabled = true;
-                generateBtn.textContent = '🧠 Generating...';
-                showStatus('🤖 Generating code...', 'info');
+                generateBtn.textContent = 'Generating...';
+                showStatus('Generating code...', 'info');
                 
                 const result = await window.electronAPI.ai.generateCode(prompt);
                 
                 if (result.success) {
                     codeOutput.value = result.code;
-                    showStatus('✅ Code generated successfully!', 'success');
+                    showStatus('Code generated successfully!', 'success');
                     document.getElementById('actionButtons').style.display = 'flex';
                 } else {
-                    showStatus('❌ Generation failed: ' + result.error, 'error');
+                    showStatus('Generation failed: ' + result.error, 'error');
                 }
                 
             } catch (error) {
-                showStatus('❌ Error: ' + error.message, 'error');
+                showStatus('Error: ' + error.message, 'error');
             } finally {
                 generateBtn.disabled = false;
-                generateBtn.textContent = '🧠 Generate Code';
+                generateBtn.textContent = 'Generate Code';
             }
         }
         
@@ -244,7 +635,7 @@
             const code = document.getElementById('codeOutput').value;
             if (code) {
                 navigator.clipboard.writeText(code);
-                showStatus('✅ Code copied to clipboard!', 'success');
+                showStatus('Code copied to clipboard!', 'success');
             }
         }
         
@@ -258,6 +649,22 @@
         function goBack() {
             window.location.href = 'index.html';
         }
+        
+        function openAboutModal() {
+            document.getElementById('aboutModal').style.display = 'block';
+        }
+        
+        function closeAboutModal() {
+            document.getElementById('aboutModal').style.display = 'none';
+        }
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('aboutModal');
+            if (event.target === modal) {
+                closeAboutModal();
+            }
+        });
     </script>
 </body>
 </html> 

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Template Recovery Check</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background: #f5f5f5;
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status { 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 4px; 
+        }
+        .success { background: #d4edda; color: #155724; }
+        .warning { background: #fff3cd; color: #856404; }
+        .error { background: #f8d7da; color: #721c24; }
+        button { 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .template-item {
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+            background: #f9f9f9;
+        }
+        .template-title { font-weight: bold; color: #007bff; }
+        textarea { width: 100%; height: 200px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Custom Template Recovery Tool</h1>
+        <p>This tool checks if your custom templates are still saved in the browser's localStorage.</p>
+        
+        <button onclick="checkTemplates()">Check Templates</button>
+        <button onclick="showBackupData()">Show Backup Data</button>
+        <button onclick="window.location.href='index.html'">Back to App</button>
+        
+        <div id="status"></div>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        function showStatus(message, type) {
+            document.getElementById('status').innerHTML = 
+                `<div class="status ${type}">${message}</div>`;
+        }
+
+        function checkTemplates() {
+            try {
+                const saved = localStorage.getItem('wincc-custom-templates');
+                const results = document.getElementById('results');
+                
+                if (saved) {
+                    const templates = JSON.parse(saved);
+                    showStatus(`✅ Found ${templates.length} custom templates in localStorage!`, 'success');
+                    
+                    let html = '<h3>Your Custom Templates:</h3>';
+                    templates.forEach((t, index) => {
+                        html += `<div class="template-item">
+                            <div class="template-title">${t.title || 'Untitled'}</div>
+                            <div><strong>ID:</strong> ${t.id}</div>
+                            <div><strong>Category:</strong> ${t.category || 'Unknown'}</div>
+                            <div><strong>Description:</strong> ${t.description || 'No description'}</div>
+                            <div><strong>Custom:</strong> ${t.isCustom ? 'Yes' : 'No'}</div>
+                            <div><strong>Created:</strong> ${t.createdAt || 'Unknown'}</div>
+                            <div><strong>Code Preview:</strong> <code>${(t.code || '').substring(0, 100)}...</code></div>
+                        </div>`;
+                    });
+                    results.innerHTML = html;
+                } else {
+                    showStatus('⚠️ No custom templates found in localStorage', 'warning');
+                    results.innerHTML = '<p>No custom templates found. You may need to recreate them.</p>';
+                }
+            } catch (error) {
+                showStatus(`❌ Error: ${error.message}`, 'error');
+                console.error('Template check error:', error);
+            }
+        }
+
+        function showBackupData() {
+            try {
+                const saved = localStorage.getItem('wincc-custom-templates');
+                const results = document.getElementById('results');
+                
+                if (saved) {
+                    showStatus('✅ Backup data ready', 'success');
+                    results.innerHTML = `
+                        <h3>Raw Template Data (for backup):</h3>
+                        <textarea readonly onclick="this.select()">${saved}</textarea>
+                        <p><em>Click the text area to select all, then copy (Ctrl+C)</em></p>
+                    `;
+                } else {
+                    showStatus('⚠️ No template data to backup', 'warning');
+                }
+            } catch (error) {
+                showStatus(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-check on load
+        checkTemplates();
+    </script>
+</body>
+</html> 

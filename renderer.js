@@ -49,6 +49,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const cancelAdminBtn = document.getElementById('cancelAdminBtn');
     const saveAdminBtn = document.getElementById('saveAdminBtn');
     
+    // About modal elements
+    const aboutBtn = document.getElementById('aboutBtn');
+    const aboutModal = document.getElementById('aboutModal');
+    const closeAboutModal = document.getElementById('closeAboutModal');
+    const closeAboutBtn = document.getElementById('closeAboutBtn');
+    
     // AI modal elements - removed (now uses separate page)
     
     let currentTemplate = null;
@@ -91,6 +97,26 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function setupEventListeners() {
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        
+        // Load saved theme or default to light
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        setTheme(savedTheme);
+        
+        themeToggle.addEventListener('click', function() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+        
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            themeIcon.textContent = theme === 'light' ? '🌙' : '☀️';
+        }
+        
         // Search functionality
         searchBox.addEventListener('input', function() {
             searchTerm = this.value.toLowerCase();
@@ -122,6 +148,11 @@ document.addEventListener('DOMContentLoaded', function() {
         cancelAdminBtn.addEventListener('click', closeAdminModalFunc);
         saveAdminBtn.addEventListener('click', saveAdminSettings);
         
+        // About modal events
+        aboutBtn.addEventListener('click', openAboutModal);
+        closeAboutModal.addEventListener('click', closeAboutModalFunc);
+        closeAboutBtn.addEventListener('click', closeAboutModalFunc);
+        
         // AI modal events - removed (now uses separate page)
         
         // Close modal when clicking outside
@@ -134,6 +165,12 @@ document.addEventListener('DOMContentLoaded', function() {
         adminModal.addEventListener('click', function(e) {
             if (e.target === adminModal) {
                 closeAdminModalFunc();
+            }
+        });
+        
+        aboutModal.addEventListener('click', function(e) {
+            if (e.target === aboutModal) {
+                closeAboutModalFunc();
             }
         });
         
@@ -162,31 +199,40 @@ document.addEventListener('DOMContentLoaded', function() {
             renderTemplateSection('User Created Templates', customTemplates, 'custom-section');
         }
         
-        // Render Official Siemens Templates section
+        // Render Official Siemens Templates section (expanded by default)
         if (officialTemplates.length > 0) {
-            renderTemplateSection('Official Siemens Templates', officialTemplates, 'siemens-section');
+            renderTemplateSection('Official Siemens Templates', officialTemplates, 'siemens-section', false);
         }
         
         updateTemplateCount();
     }
     
-    function renderTemplateSection(sectionTitle, templates, sectionClass) {
+    function renderTemplateSection(sectionTitle, templates, sectionClass, defaultCollapsed = false) {
         // Create main section
         const sectionDiv = document.createElement('div');
         sectionDiv.className = `template-section ${sectionClass}`;
+        
+        // Set default collapsed state
+        if (defaultCollapsed) {
+            sectionDiv.classList.add('collapsed');
+        }
         
         // Section header
         const sectionHeaderDiv = document.createElement('div');
         sectionHeaderDiv.className = 'section-header';
         sectionHeaderDiv.innerHTML = `
-            <span class="section-title">${sectionTitle}</span>
-            <span class="section-count">(${templates.length})</span>
-            <span class="section-toggle">▼</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="section-title">${sectionTitle}</span>
+                <span class="section-count">(${templates.length})</span>
+            </div>
+            <span class="section-toggle">${defaultCollapsed ? '▶' : '▼'}</span>
         `;
         
         // Toggle section collapse
         sectionHeaderDiv.addEventListener('click', function() {
-            sectionDiv.classList.toggle('collapsed');
+            const isCollapsed = sectionDiv.classList.toggle('collapsed');
+            const toggle = sectionHeaderDiv.querySelector('.section-toggle');
+            toggle.textContent = isCollapsed ? '▶' : '▼';
         });
         
         sectionDiv.appendChild(sectionHeaderDiv);
@@ -550,6 +596,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function closeAdminModalFunc() {
         adminModal.style.display = 'none';
+    }
+    
+    // About Modal Functions
+    function openAboutModal() {
+        aboutModal.style.display = 'block';
+    }
+    
+    function closeAboutModalFunc() {
+        aboutModal.style.display = 'none';
     }
     
     function switchAdminTab(tabName) {
