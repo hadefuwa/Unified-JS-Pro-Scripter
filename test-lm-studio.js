@@ -1,12 +1,45 @@
 // test-lm-studio.js - Simple Node.js test for LM Studio connection
 const axios = require('axios');
 
+// Helper function to extract JavaScript code from mixed content
+function extractJavaScript(text) {
+    // Remove complete thinking blocks first
+    text = text.replace(/<think>[\s\S]*?<\/think>/gi, '');
+    text = text.replace(/<thinking>[\s\S]*?<\/thinking>/gi, '');
+    
+    // Look for function declarations
+    const functionMatch = text.match(/function\s+\w+[\s\S]*?\n}/);
+    if (functionMatch) {
+        return functionMatch[0];
+    }
+    
+    // Look for try-catch blocks
+    const tryMatch = text.match(/try\s*\{[\s\S]*?\}\s*catch[\s\S]*?\}/);
+    if (tryMatch) {
+        return tryMatch[0];
+    }
+    
+    // Look for variable declarations followed by statements
+    const varMatch = text.match(/(var|let|const)\s+\w+[\s\S]*?;/);
+    if (varMatch) {
+        return varMatch[0];
+    }
+    
+    // Look for code blocks in backticks
+    const codeBlockMatch = text.match(/```(?:javascript|js)?\s*([\s\S]*?)```/);
+    if (codeBlockMatch) {
+        return codeBlockMatch[1];
+    }
+    
+    return text.trim();
+}
+
 // Test configuration
 const LM_STUDIO_CONFIG = {
     host: '169.254.80.169',  // Your actual server IP from the screenshot
     port: 1234,
-    model: 'google/gemma-3-4b',  // Your loaded Gemma 3 4B model
-    maxTokens: 200,
+    // No model specified - will use whatever model is loaded in LM Studio
+    maxTokens: 400,
     temperature: 0.1
 };
 
@@ -20,15 +53,15 @@ async function testLMStudio() {
         // Test 1: Basic connection test
         console.log('🔍 Test 1: Basic WinCC code generation...');
         const response = await axios.post(`http://${LM_STUDIO_CONFIG.host}:${LM_STUDIO_CONFIG.port}/v1/chat/completions`, {
-            model: LM_STUDIO_CONFIG.model,
+            // No model specified - LM Studio will use the currently loaded model
             messages: [
                 {
                     role: 'system',
-                    content: 'You are a WinCC Unified JavaScript expert. Only generate WinCC JavaScript code with proper error handling using HMIRuntime.Trace() for logging.'
+                    content: 'You are a WinCC Unified JavaScript expert. You must respond with ONLY JavaScript code. Do not include any explanations, thinking, reasoning, or commentary. Do not use <think> tags. Start your response immediately with the JavaScript code. Use HMIRuntime.Trace() for logging and include proper error handling.'
                 },
                 {
                     role: 'user', 
-                    content: 'Write WinCC JavaScript to read a tag called "Temperature" and log its value'
+                    content: 'Write WinCC JavaScript to read a tag called "Temperature" and log its value.\n\nStart with: function readTemperature() {'
                 }
             ],
             max_tokens: LM_STUDIO_CONFIG.maxTokens,
@@ -39,16 +72,20 @@ async function testLMStudio() {
             console.log('✅ LM Studio connection successful!');
             console.log('📝 Generated code:');
             console.log('─'.repeat(50));
-            console.log(response.data.choices[0].message.content);
+            
+            // Clean up the generated code (remove thinking tags)
+            let cleanedCode = response.data.choices[0].message.content;
+            cleanedCode = extractJavaScript(cleanedCode);
+            
+            console.log(cleanedCode);
             console.log('─'.repeat(50));
             
             // Validate the response contains WinCC patterns
-            const code = response.data.choices[0].message.content;
             const hasWinCCPatterns = {
-                hasHMITrace: code.includes('HMIRuntime.Trace'),
-                hasTryCatch: code.includes('try') && code.includes('catch'),
-                hasTagsFunction: code.includes('Tags('),
-                noWebAPIs: !code.includes('console.log') && !code.includes('document.')
+                hasHMITrace: cleanedCode.includes('HMIRuntime.Trace'),
+                hasTryCatch: cleanedCode.includes('try') && cleanedCode.includes('catch'),
+                hasTagsFunction: cleanedCode.includes('Tags('),
+                noWebAPIs: !cleanedCode.includes('console.log') && !cleanedCode.includes('document.')
             };
 
             console.log('\n🔍 Code validation:');
@@ -88,11 +125,13 @@ async function testAdvancedPrompt() {
     
     try {
         const response = await axios.post(`http://${LM_STUDIO_CONFIG.host}:${LM_STUDIO_CONFIG.port}/v1/chat/completions`, {
-            model: LM_STUDIO_CONFIG.model,
+            // No model specified - LM Studio will use the currently loaded model
             messages: [
                 {
                     role: 'system',
-                    content: `You are a WinCC Unified JavaScript expert. Follow these rules:
+                    content: `You are a WinCC Unified JavaScript expert. You must respond with ONLY JavaScript code. Do not include any explanations, thinking, reasoning, or commentary. Do not use <think> tags. Start your response immediately with the JavaScript code.
+
+Rules:
 1. ONLY generate WinCC Unified JavaScript code
 2. ALWAYS include error handling with try-catch
 3. ALWAYS use HMIRuntime.Trace() for logging
@@ -101,7 +140,7 @@ async function testAdvancedPrompt() {
                 },
                 {
                     role: 'user', 
-                    content: 'Create a function that reads multiple tags (Temperature, Pressure, Flow) and returns an object with their values. Include proper error handling.'
+                    content: 'Create a function that reads multiple tags (Temperature, Pressure, Flow) and returns an object with their values. Include proper error handling.\n\nStart with: function readSensorData() {'
                 }
             ],
             max_tokens: 400,
@@ -112,7 +151,12 @@ async function testAdvancedPrompt() {
             console.log('✅ Advanced prompt successful!');
             console.log('📝 Generated code:');
             console.log('─'.repeat(50));
-            console.log(response.data.choices[0].message.content);
+            
+            // Clean up the generated code (remove thinking tags)
+            let cleanedCode = response.data.choices[0].message.content;
+            cleanedCode = extractJavaScript(cleanedCode);
+            
+            console.log(cleanedCode);
             console.log('─'.repeat(50));
             return true;
         }

@@ -13,7 +13,7 @@ class WinCCAIScripter {
             lmStudio: {
                 host: '169.254.80.169',  // Your LM Studio server IP
                 port: 1234,
-                model: 'google/gemma-3-4b',  // Your loaded model
+                // No model specified - will use whatever model is loaded in LM Studio
                 maxTokens: 500,
                 temperature: 0.1  // Low temperature for consistent code
             },
@@ -199,7 +199,7 @@ class WinCCAIScripter {
             const context = this.buildContext(similarTemplates);
             
             // Create system prompt with strict WinCC guidelines
-            const systemPrompt = `You are a Siemens WinCC Unified JavaScript expert. Generate ONLY valid WinCC JavaScript code.
+            const systemPrompt = `You are a Siemens WinCC Unified JavaScript expert. You must respond with ONLY JavaScript code. Do not include any explanations, thinking, reasoning, or commentary. Do not use <think> tags. Start your response immediately with the JavaScript code.
 
 CRITICAL REQUIREMENTS:
 1. Use Tags(tagName).Read() or Tags(tagName).Write(value) for tag operations
@@ -211,7 +211,7 @@ CRITICAL REQUIREMENTS:
 
 ${context}
 
-Generate only the JavaScript function code. No explanations, no markdown, just the code.`;
+Generate ONLY the JavaScript function code. No explanations, no markdown, just the code.`;
 
             // Create the full prompt
             const messages = [
@@ -229,16 +229,33 @@ Generate only the JavaScript function code. No explanations, no markdown, just t
             const response = await axios.post(
                 `http://${this.config.lmStudio.host}:${this.config.lmStudio.port}/v1/chat/completions`,
                 {
-                    model: this.config.lmStudio.model,
+                    // No model specified - LM Studio will use the currently loaded model
                     messages: messages,
                     max_tokens: this.config.lmStudio.maxTokens,
                     temperature: this.config.lmStudio.temperature
-                    // Removed stop sequences that were interfering
                 }
             );
             
             if (response.data && response.data.choices && response.data.choices[0]) {
                 let generatedCode = response.data.choices[0].message.content;
+                
+                // Remove thinking tags and reasoning (DeepSeek R1 specific)
+                generatedCode = generatedCode.replace(/<think>[\s\S]*?<\/think>/gi, '');
+                generatedCode = generatedCode.replace(/<thinking>[\s\S]*?<\/thinking>/gi, '');
+                
+                // If there's still a <think> tag without closing, try to extract code after it
+                if (generatedCode.includes('<think>')) {
+                    const thinkIndex = generatedCode.indexOf('<think>');
+                    // Look for code patterns after the thinking
+                    const afterThinking = generatedCode.substring(thinkIndex);
+                    const codePattern = /function\s+\w+|try\s*\{|var\s+\w+|\/\*[\s\S]*?\*\//;
+                    const match = afterThinking.match(codePattern);
+                    if (match) {
+                        generatedCode = afterThinking.substring(match.index);
+                    } else {
+                        generatedCode = generatedCode.substring(0, thinkIndex);
+                    }
+                }
                 
                 // Clean up markdown formatting (remove ```javascript and ``` wrappers)
                 generatedCode = generatedCode.replace(/^```javascript\s*\n?/i, '');
